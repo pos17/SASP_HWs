@@ -6,14 +6,15 @@ clc; close all; clear all;
 %==========================================================================
 
 % xcorr, circshift, cell, window
-
+addpath('audioInputs')
+addpath('audioOutputs')
 instr_name = "piano.wav";
 instr_name_recon = "piano_recon.wav";
 speech_name = "speech.wav";
 talking_instr_res_name = "talking_instr_res.wav";
 instr_res_name = "instr_filter_res.wav";
 st_res_sub_name = "subtracted_res.wav";
-st_res_sub_name_test = "subtracted_res. wav";
+st_res_sub_name_test = "subtracted_res.wav";
 
 
 [instr_t,instr_Fs] = audioread(instr_name);
@@ -74,5 +75,5 @@ instr_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = st_res_lin / mean(st_res_lin);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 
-audiowrite(talking_instr_res_name,real(talking_instr_lin),instr_Fs);
-audiowrite(instr_res_name,real(instr_lin),instr_Fs);
+audiowrite("./audioOutputs/"+talking_instr_res_name,real(talking_instr_lin),instr_Fs);
+audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
