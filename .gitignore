@@ -265,4 +265,10 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
+#audio
+DAAP_HW1/audioOutputs
+
+#MATALB
+*.mat
+
 # End of https://www.toptal.com/developers/gitignore/api/macos,matlab,windows,python
