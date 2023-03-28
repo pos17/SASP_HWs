@@ -28,10 +28,10 @@ addpath('audioOutputs')
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 800;
+taps_speech = 80;
 taps_music = 800;
 
-wl =  1024; 
+wl =  2048; 
 
 [instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
 [speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
@@ -51,13 +51,26 @@ for nn = 1:chunksNum_instr
 end
 
 
+for nn = 1:chunksNum_instr
+    instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+    speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));
+    
+end
+
+
+
+
+
 instr_st_res =  zeros(wl, chunksNum_instr); 
 instr_st_res_w = zeros(wl,chunksNum_instr);
 talking_instr_st_res =  zeros(wl, chunksNum_instr); 
 talking_instr_st_res_w = zeros(wl,chunksNum_instr);
 for nn = 1:chunksNum_instr
     %instr_A(:,nn) = instr_A(:,nn)/(mean(instr_A(:,nn)/mean(instr_st_signal_w(:,nn))));
+    
     instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn).* instr_A(:,nn);
+    %instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);
+    
     talking_instr_st_res_w(:,nn) = instr_st_res_w(:,nn) .* speech_H(:,nn);
     %st_res_w(:,nn) = st_signal_w(:,nn)./ H(:,nn);
     instr_st_res(:,nn) = ifft(instr_st_res_w(:,nn));
@@ -80,5 +93,54 @@ instr_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = st_res_lin / mean(st_res_lin);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 
+
+
+%%
+
+talking_instr_lin =talking_instr_lin /max(abs(talking_instr_lin));
 audiowrite("./audioOutputs/"+talking_instr_res_name,real(talking_instr_lin),instr_Fs);
 audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
+
+
+%% plots
+
+%for nn = 1:chunksNum_instr
+%    instr_H(:,nn) = (instr_H(:,nn) /max(instr_H(:,nn)))*max(instr_st_signal_w(:,nn));
+%end
+w = linspace(-instr_Fs/2,instr_Fs/2,wl);
+figure
+title("instrument filter comparison")
+
+plot(w,10*log10(abs(instr_st_signal_w(:,600)).^2))
+%plot(w,abs(st_signal_w(:,600)))
+hold on 
+plot(w,10*log10(abs(instr_H(:,600)).^2),"LineStyle","--")
+%plot(w,abs(H(:,600)))
+hold on 
+%plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
+%plot(w,abs(H(:,600)))
+
+
+
+%xlim([0,1])
+legend("signal chunk","filter shape","test filter shape")
+
+figure
+title("speech filter comparison")
+plot(w,10*log10(abs(speech_st_signal_w(:,600)).^2))
+%plot(w,abs(st_signal_w(:,600)))
+hold on 
+plot(w,10*log10(abs(speech_H(:,600)).^2),"LineStyle","--")
+%plot(w,abs(H(:,600)))
+hold on 
+%plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
+%plot(w,abs(H(:,600)))
+
+
+
+%xlim([0,1])
+legend("signal chunk","filter shape","test filter shape")
+
+
+figure 
+plot(talking_instr_lin)
