@@ -6,8 +6,7 @@ clc; close all; clear all;
 %==========================================================================
 
 % xcorr, circshift, cell, window
-addpath('audioInputs')
-addpath('audioOutputs')
+
 instr_name = "piano.wav";
 instr_name_recon = "piano_recon.wav";
 speech_name = "speech.wav";
@@ -16,6 +15,12 @@ instr_res_name = "instr_filter_res.wav";
 st_res_sub_name = "subtracted_res.wav";
 st_res_sub_name_test = "subtracted_res.wav";
 
+if not(isfolder("audioOutputs"))
+    mkdir("audioOutputs")
+end
+
+addpath('audioInputs')
+addpath('audioOutputs')
 
 [instr_t,instr_Fs] = audioread(instr_name);
 [speech_t,speech_Fs] = audioread(speech_name);
