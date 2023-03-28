@@ -28,17 +28,17 @@ addpath('audioOutputs')
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 80;
-taps_music = 800;
+taps_speech = 100;
+taps_music = 100;
 
-wl =  2048; 
+wl =  4096; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hamming",wl);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hamming",wl);
 
 
-[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music);
-[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech);
+[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,1,0.3,1000);
+[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,0.3,1000);
 
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);
@@ -94,6 +94,24 @@ instr_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 
 
+%% testing speech shaping filter 
+
+sine = linspace(1,length(speech_t)/speech_Fs,length(speech_t)).';
+sine_shaped = zeros(length(speech_t),1);
+sine = 0.1 *sin(500*sine);
+sine_shaped_st = zeros(wl,chunksNum_speech);
+sine_shaped_st_w = zeros(wl,chunksNum_speech);
+sine_st_w = zeros(wl,chunksNum_speech);
+sine_st = windowing(sine,"hamming",wl);
+for nn = 1:chunksNum_speech
+    sine_st_w(:,nn) = fft(sine_st(:,nn));
+    sine_shaped_st_w(:,nn) = sine_st_w(:,nn) .* speech_H(:,nn);
+    sine_shaped_st(:,nn) = ifft(sine_shaped_st_w(:,nn));
+end
+
+sine_shaped = adding(sine_shaped_st,0.5,wl);
+sine_shaped = sine_shaped/max(abs(sine_shaped));
+audiowrite("./audioOutputs/"+"whiteShaped.wav",real(sine_shaped),instr_Fs);
 
 %%
 
@@ -111,10 +129,10 @@ w = linspace(-instr_Fs/2,instr_Fs/2,wl);
 figure
 title("instrument filter comparison")
 
-plot(w,10*log10(abs(instr_st_signal_w(:,600)).^2))
+plot(w,10*log10(abs(instr_st_signal_w(:,30)).^2))
 %plot(w,abs(st_signal_w(:,600)))
 hold on 
-plot(w,10*log10(abs(instr_H(:,600)).^2),"LineStyle","--")
+plot(w,10*log10(abs(instr_H(:,30)).^2),"LineStyle","--")
 %plot(w,abs(H(:,600)))
 hold on 
 %plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
@@ -127,10 +145,10 @@ legend("signal chunk","filter shape","test filter shape")
 
 figure
 title("speech filter comparison")
-plot(w,10*log10(abs(speech_st_signal_w(:,600)).^2))
+plot(w,10*log10(abs(speech_st_signal_w(:,200)).^2))
 %plot(w,abs(st_signal_w(:,600)))
 hold on 
-plot(w,10*log10(abs(speech_H(:,600)).^2),"LineStyle","--")
+plot(w,10*log10(abs(speech_H(:,200)).^2),"LineStyle","--")
 %plot(w,abs(H(:,600)))
 hold on 
 %plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
