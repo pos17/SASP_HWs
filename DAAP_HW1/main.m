@@ -28,17 +28,17 @@ addpath('audioOutputs')
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 100;
-taps_music = 100;
+taps_speech = 25;
+taps_music = 600;
 
-wl =  4096; 
+wl =  2048; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hamming",wl);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hamming",wl);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
 
 
-[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,1,0.3,1000);
-[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,0.3,1000);
+[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,0,0.3,1000);
+[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,0,0.3,1000);
 
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);
