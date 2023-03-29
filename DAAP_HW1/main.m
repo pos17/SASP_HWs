@@ -37,8 +37,8 @@ wl =  2048;
 [speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
 
 
-[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,0,0.3,1000);
-[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,0,0.3,1000);
+[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,1,10);
+[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,10);
 
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);

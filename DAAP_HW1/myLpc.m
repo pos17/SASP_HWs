@@ -1,4 +1,4 @@
-function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,steepDesc,mu,numberOfCycles)
+function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,steepDesc,numberOfCycles)
 
 if(steepDesc==1)
     p = taps_number;
@@ -22,15 +22,29 @@ if(steepDesc==1)
         R(:,:,nn) = toeplitz(r_0(:,nn));
          % adding new method for steepest descent, I think it's wrong
          [~,lambda] = eig(R(:,:,nn));
-         mu = 2/(max(diag(lambda))*2);
+         mu = 2/(max(diag(lambda))*10);
         % for ss = 1:numberOfCycles
-        while norm(grad_J) > sqrt(p*0.001)
-            grad_J(:,nn) = -2 *r_1(:,nn) + (2* R(:,:,nn) * a(:,nn)); 
-
-            a(:,nn+1) = a(:,nn) + (0.5 * mu * - grad_J(1,nn));
-        end
+            grad_J(:,nn) = -(2 *r_1(:,nn)) + (2* R(:,:,nn) * a(:,nn)); 
+            a(:,nn) = a(:,nn) - (0.5 * mu *grad_J(:,nn));
+%         while norm(grad_J) > sqrt(p*0.1)
+%             grad_J(:,nn) = -2 *r_1(:,nn) + (2* R(:,:,nn) * a(:,nn)); 
+% 
+%             a(:,nn+1) = a(:,nn) + (0.5 * mu * - grad_J(1,nn));
+%         end
     end
     
+    for nn = 1:N
+        while norm(grad_J) > sqrt(p*100)
+            R_a = (2* R(:,:,nn) * a(:,nn)); 
+            grad_J(:,nn) = -(2 *r_1(:,nn)) + R_a;
+
+            a(:,nn) = a(:,nn) - (0.5 * mu * ( grad_J(:,nn)));
+            
+            %a(:,nn) = a(:,nn) + ( mu * ( grad_J(:,nn)));
+            
+            norm(grad_J)
+        end
+    end
     a_1 = zeros(p+1,N);
     A = zeros(M,N);
     H = zeros(M,N);
