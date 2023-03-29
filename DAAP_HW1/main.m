@@ -28,8 +28,8 @@ addpath('audioOutputs')
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 25;
-taps_music = 600;
+taps_speech = 100;
+taps_music = 100;
 
 wl =  2048; 
 

@@ -31,10 +31,8 @@ if(steepDesc==1)
 % 
 %             a(:,nn+1) = a(:,nn) + (0.5 * mu * - grad_J(1,nn));
 %         end
-    end
     
-    for nn = 1:N
-        while norm(grad_J) > sqrt(p*100)
+        while norm(grad_J(:,nn)) > sqrt(p*0.008)
             R_a = (2* R(:,:,nn) * a(:,nn)); 
             grad_J(:,nn) = -(2 *r_1(:,nn)) + R_a;
 
@@ -42,7 +40,7 @@ if(steepDesc==1)
             
             %a(:,nn) = a(:,nn) + ( mu * ( grad_J(:,nn)));
             
-            norm(grad_J)
+            %norm(grad_J(:,nn))
         end
     end
     a_1 = zeros(p+1,N);
