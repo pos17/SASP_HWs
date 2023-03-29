@@ -266,7 +266,7 @@ $RECYCLE.BIN/
 *.lnk
 
 #audio
-DAAP_HW1/audioOutputs
+DAAP_HW1/audioOutputs/
 
 #MATALB
 *.mat
