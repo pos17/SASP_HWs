@@ -342,12 +342,44 @@ title("450")
 sgtitle('speech filter comparison', FontSize=titlesize)
 
 
+%% spectrogram
+Fs = instr_Fs;
+w1   = linspace(0,instr_Fs/2,wl/2);
+figure
+t =linspace(0,instr_t_len/instr_Fs,chunksNum_instr);
+st_signal_w1 = instr_st_signal_w(1:512,:);
+surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
+ylim([0 3000])
+view(0,90)
+disp(st_signal_w1(1,400))
 
+Fs = speech_Fs;
+w1   = linspace(0,instr_Fs/2,wl/2);
+figure
+t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
+st_signal_w1 = speech_st_signal_w(1:512,:);
+surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
+ylim([0 3000])
+view(0,90)
+disp(st_signal_w1(1,400))
 
+<<<<<<< Updated upstream
 %xlim([0,1])
 legend("signal chunk","filter shape" )%,"test filter shape")
 
+=======
+Fs = speech_Fs;
+w1   = linspace(0,instr_Fs/2,wl/2);
+figure
+t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
+st_signal_w1 = talking_instr_st_res_w(1:512,:);
+surf(t,w1,abs(st_signal_w1).^2./(max(abs(st_signal_w1).^2)),EdgeColor="none");
+%ylim([0 3000])
+view(0,90)
+disp(st_signal_w1(1,400))
+>>>>>>> Stashed changes
 
+%%
 figure 
 plot(talking_instr_lin)
 end
