@@ -5,8 +5,12 @@ function [] = main(instrFileName,speechFileName, outputFileName, solMode)
 %
 %   solMode = "steepDesc" or "linSolve"                                                                         %  
 %=========================================================================%
+clc; close all; clear all;
+axlabelsize = 15;
+titlesize = 22;
+legendsize = 15;
 
-% xcorr, circshift, cell, window
+%% xcorr, circshift, cell, window
 
 if not(isfolder("audioOutputs"))
     mkdir("audioOutputs")
@@ -17,6 +21,27 @@ addpath('audioOutputs')
 
 [instr_t,instr_Fs] = audioread(instrFileName);
 [speech_t,speech_Fs] = audioread(speechFileName);
+
+%% Resample
+
+fsin    = instr_Fs;
+fsout   = 16000;
+m       = lcm(fsin,fsout);
+up      = m/fsin;
+down    = m/fsout;
+instr_t    = resample(instr_t, up, down);
+%audiowrite([a_filename,'_22050','.wav'], x_22, fsout);
+instr_Fs=fsout;
+
+fsin    = speech_Fs;
+fsout   = 16000;
+m       = lcm(fsin,fsout);
+up      = m/fsin;
+down    = m/fsout;
+speech_t    = resample(speech_t, up, down);
+speech_Fs=fsout;
+
+%%
 
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
@@ -121,34 +146,196 @@ audiowrite("./audioOutputs/"+outputFileName,real(talking_instr_lin),instr_Fs);
 %for nn = 1:chunksNum_instr
 %    instr_H(:,nn) = (instr_H(:,nn) /max(instr_H(:,nn)))*max(instr_st_signal_w(:,nn));
 %end
-w = linspace(-instr_Fs/2,instr_Fs/2,wl);
-figure
-title("instrument filter comparison")
 
-plot(w,10*log10(abs(instr_st_signal_w(:,30)).^2))
-%plot(w,abs(st_signal_w(:,600)))
+w = linspace(0,instr_Fs/2,wl/2);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
+
+subplot(3,3,1); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,50).^2)))
+%xlim([0,instr_Fs/2])
+xlabel("frequency [Hz]")
+ylabel("[dB]")
 hold on 
-plot(w,10*log10(abs(instr_H(:,30)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
-hold on 
-%plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
-
-
-
-%xlim([0,1])
+plot(w,10*log10(abs(instr_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
+title("50")
 legend("signal chunk","filter shape","test filter shape")
 
-figure
-title("speech filter comparison")
-plot(w,10*log10(abs(speech_st_signal_w(:,200)).^2))
-%plot(w,abs(st_signal_w(:,600)))
+
+subplot(3,3,2); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,100)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
 hold on 
-plot(w,10*log10(abs(speech_H(:,200)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
+plot(w,10*log10(abs(instr_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
+title("100")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,3); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,150)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
 hold on 
-%plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
+plot(w,10*log10(abs(instr_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
+title("150")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,4); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,200)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
+title("200")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,5); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,250)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
+title("250")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,6); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,300)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
+title("300")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,7); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,350)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
+title("350")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,8); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,400)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
+title("400")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,9); 
+plot(w,10*log10(abs(instr_st_signal_w(1:end/2,450)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(instr_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
+title("450")
+legend("signal chunk","filter shape","test filter shape")
+
+sgtitle('Instrument filter comparison', FontSize=titlesize)
+
+
+% 
+% figure
+% title("speech filter comparison")
+% plot(w,10*log10(abs(speech_st_signal_w(:,100)).^2))
+% %plot(w,abs(st_signal_w(:,600)))
+% hold on 
+% plot(w,10*log10(abs(speech_H(:,100)).^2),"Linestyle","-", "Linewidth",1.3)
+% %plot(w,abs(H(:,600)))
+% hold on 
+% %plot(w,10*log10(abs(H_test(:,600)).^2),"Linestyle","-", "Linewidth",1.3)
+% %plot(w,abs(H(:,600)))
+
+
+
+w = linspace(0,instr_Fs/2,wl/2);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
+
+subplot(3,3,1); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,50)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
+title("50")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,2); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,100)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
+title("100")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,3); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,150)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
+title("150")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,4); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,200)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
+title("200")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,5); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,250)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
+title("250")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,6); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,300)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
+title("300")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,7); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,350)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
+title("350")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,8); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,400)).^2))
+xlabel("frequency [Hz]")
+ylabel("[dB]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
+title("400")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,9); 
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2,450)).^2))
+xlabel("frequency [Hz]")
+ylabel("frequency [Hz]")
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
+title("450")
+legend("signal chunk","filter shape","test filter shape")
+
+sgtitle('speech filter comparison', FontSize=titlesize)
+
 
 
 
