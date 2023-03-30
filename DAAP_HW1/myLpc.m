@@ -16,32 +16,28 @@ if(steepDesc==1)
     r_0 = r(1:end-1,:);
     r_1 = r(2:end,:);
     R = zeros(p,p,N);
-    a = zeros(p, N);
+    a = -1 + (2).*rand(p,N);
+    %a = rand(p, N);
     grad_J = zeros(p,N);
+    c=0;
+    cc(nn,1)=0;
     for nn = 1:N
         R(:,:,nn) = toeplitz(r_0(:,nn));
          % adding new method for steepest descent, I think it's wrong
          [~,lambda] = eig(R(:,:,nn));
          mu = 2/(max(diag(lambda))*10);
-        % for ss = 1:numberOfCycles
-            grad_J(:,nn) = -(2 *r_1(:,nn)) + (2* R(:,:,nn) * a(:,nn)); 
-            a(:,nn) = a(:,nn) - (0.5 * mu *grad_J(:,nn));
-%         while norm(grad_J) > sqrt(p*0.1)
-%             grad_J(:,nn) = -2 *r_1(:,nn) + (2* R(:,:,nn) * a(:,nn)); 
-% 
-%             a(:,nn+1) = a(:,nn) + (0.5 * mu * - grad_J(1,nn));
-%         end
-    
-        while norm(grad_J(:,nn)) > sqrt(p*0.008)
+
+        grad_J(:,nn) = -(2 *r_1(:,nn)) + (2* R(:,:,nn) * a(:,nn)); 
+        a(:,nn) = a(:,nn) - (0.5 * mu *grad_J(:,nn));
+
+        while norm(grad_J(:,nn)) > 0.5 %sqrt(p*0.001)
+            cc(nn,1)=1;
             R_a = (2* R(:,:,nn) * a(:,nn)); 
             grad_J(:,nn) = -(2 *r_1(:,nn)) + R_a;
-
             a(:,nn) = a(:,nn) - (0.5 * mu * ( grad_J(:,nn)));
-            
-            %a(:,nn) = a(:,nn) + ( mu * ( grad_J(:,nn)));
-            
-            %norm(grad_J(:,nn))
+
         end
+        %a(:,nn+1)=a(:,nn);
     end
     a_1 = zeros(p+1,N);
     A = zeros(M,N);

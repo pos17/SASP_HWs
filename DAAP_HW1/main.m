@@ -1,5 +1,7 @@
 clc; close all; clear all;
-
+axlabelsize = 15;
+titlesize = 22;
+legendsize = 15;
 %==========================================================================
 %                           DAAP HW1 main
 %                           
@@ -25,20 +27,41 @@ addpath('audioOutputs')
 [instr_t,instr_Fs] = audioread(instr_name);
 [speech_t,speech_Fs] = audioread(speech_name);
 
+%% Resample
+
+fsin    = instr_Fs;
+fsout   = 16000;
+m       = lcm(fsin,fsout);
+up      = m/fsin;
+down    = m/fsout;
+instr_t    = resample(instr_t, up, down);
+%audiowrite([a_filename,'_22050','.wav'], x_22, fsout);
+instr_Fs=fsout;
+
+fsin    = speech_Fs;
+fsout   = 16000;
+m       = lcm(fsin,fsout);
+up      = m/fsin;
+down    = m/fsout;
+speech_t    = resample(speech_t, up, down);
+speech_Fs=fsout;
+
+%%
+
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
 taps_speech = 100;
-taps_music = 100;
+taps_music = 30;
 
-wl =  2048; 
+wl =  1024; 
 
 [instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
 [speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
 
 
-[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,1,10);
-[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,10);
+[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,0,10);
+[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,0,10);
 
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);
@@ -125,34 +148,196 @@ audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
 %for nn = 1:chunksNum_instr
 %    instr_H(:,nn) = (instr_H(:,nn) /max(instr_H(:,nn)))*max(instr_st_signal_w(:,nn));
 %end
-w = linspace(-instr_Fs/2,instr_Fs/2,wl);
-figure
-title("instrument filter comparison")
 
-plot(w,10*log10(abs(instr_st_signal_w(:,30)).^2))
-%plot(w,abs(st_signal_w(:,600)))
+w = linspace(instr_Fs/2,-instr_Fs/2,wl);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
+
+subplot(3,3,1); 
+plot(w,10*log10(abs(instr_st_signal_w(:,50).^2)))
+%xlim([0,instr_Fs/2])
+xlabel(" []")
+ylabel(" []")
 hold on 
-plot(w,10*log10(abs(instr_H(:,30)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
-hold on 
-%plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
-%plot(w,abs(H(:,600)))
-
-
-
-%xlim([0,1])
+plot(w,10*log10(abs(instr_H(:,50)).^2),"LineStyle","--")
+title("50")
 legend("signal chunk","filter shape","test filter shape")
+
+
+subplot(3,3,2); 
+plot(w,10*log10(abs(instr_st_signal_w(:,100)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,100)).^2),"LineStyle","--")
+title("100")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,3); 
+plot(w,10*log10(abs(instr_st_signal_w(:,150)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,150)).^2),"LineStyle","--")
+title("150")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,4); 
+plot(w,10*log10(abs(instr_st_signal_w(:,200)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,200)).^2),"LineStyle","--")
+title("200")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,5); 
+plot(w,10*log10(abs(instr_st_signal_w(:,250)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,250)).^2),"LineStyle","--")
+title("250")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,6); 
+plot(w,10*log10(abs(instr_st_signal_w(:,300)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,300)).^2),"LineStyle","--")
+title("300")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,7); 
+plot(w,10*log10(abs(instr_st_signal_w(:,350)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,350)).^2),"LineStyle","--")
+title("350")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,8); 
+plot(w,10*log10(abs(instr_st_signal_w(:,400)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,400)).^2),"LineStyle","--")
+title("400")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,9); 
+plot(w,10*log10(abs(instr_st_signal_w(:,450)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(instr_H(:,450)).^2),"LineStyle","--")
+title("450")
+legend("signal chunk","filter shape","test filter shape")
+
+sgtitle('Instrument filter comparison', FontSize=titlesize)
+
+
 
 figure
 title("speech filter comparison")
-plot(w,10*log10(abs(speech_st_signal_w(:,200)).^2))
+plot(w,10*log10(abs(speech_st_signal_w(:,100)).^2))
 %plot(w,abs(st_signal_w(:,600)))
 hold on 
-plot(w,10*log10(abs(speech_H(:,200)).^2),"LineStyle","--")
+plot(w,10*log10(abs(speech_H(:,100)).^2),"LineStyle","--")
 %plot(w,abs(H(:,600)))
 hold on 
 %plot(w,10*log10(abs(H_test(:,600)).^2),"LineStyle","--")
 %plot(w,abs(H(:,600)))
+
+
+
+w = linspace(-speech_Fs/2,speech_Fs/2,wl);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
+
+subplot(3,3,1); 
+plot(w,10*log10(abs(speech_st_signal_w(:,50)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,50)).^2),"LineStyle","--")
+title("50")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,2); 
+plot(w,10*log10(abs(speech_st_signal_w(:,100)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,100)).^2),"LineStyle","--")
+title("100")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,3); 
+plot(w,10*log10(abs(speech_st_signal_w(:,150)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,150)).^2),"LineStyle","--")
+title("150")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,4); 
+plot(w,10*log10(abs(speech_st_signal_w(:,200)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,200)).^2),"LineStyle","--")
+title("200")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,5); 
+plot(w,10*log10(abs(speech_st_signal_w(:,250)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,250)).^2),"LineStyle","--")
+title("250")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,6); 
+plot(w,10*log10(abs(speech_st_signal_w(:,300)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,300)).^2),"LineStyle","--")
+title("300")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,7); 
+plot(w,10*log10(abs(speech_st_signal_w(:,350)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,350)).^2),"LineStyle","--")
+title("350")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,8); 
+plot(w,10*log10(abs(speech_st_signal_w(:,400)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,400)).^2),"LineStyle","--")
+title("400")
+legend("signal chunk","filter shape","test filter shape")
+
+subplot(3,3,9); 
+plot(w,10*log10(abs(speech_st_signal_w(:,450)).^2))
+xlabel(" []")
+ylabel(" []")
+hold on 
+plot(w,10*log10(abs(speech_H(:,450)).^2),"LineStyle","--")
+title("450")
+legend("signal chunk","filter shape","test filter shape")
+
+sgtitle('speech filter comparison', FontSize=titlesize)
+
 
 
 
