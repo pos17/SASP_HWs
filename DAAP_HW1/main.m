@@ -1,19 +1,12 @@
-clc; close all; clear all;
+function [] = main(instrFileName,speechFileName, outputFileName, solMode)
 
-%==========================================================================
-%                           DAAP HW1 main
-%                           
-%==========================================================================
+%=========================================================================%
+%                           DAAP HW1 main                                 %
+%
+%   solMode = "steepDesc" or "linSolve"                                                                         %  
+%=========================================================================%
 
 % xcorr, circshift, cell, window
-
-instr_name = "piano.wav";
-instr_name_recon = "piano_recon.wav";
-speech_name = "speech.wav";
-talking_instr_res_name = "talking_instr_res.wav";
-instr_res_name = "instr_filter_res.wav";
-st_res_sub_name = "subtracted_res.wav";
-st_res_sub_name_test = "subtracted_res.wav";
 
 if not(isfolder("audioOutputs"))
     mkdir("audioOutputs")
@@ -22,24 +15,27 @@ end
 addpath('audioInputs')
 addpath('audioOutputs')
 
-[instr_t,instr_Fs] = audioread(instr_name);
-[speech_t,speech_Fs] = audioread(speech_name);
+[instr_t,instr_Fs] = audioread(instrFileName);
+[speech_t,speech_Fs] = audioread(speechFileName);
 
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 100;
-taps_music = 100;
+taps_speech = 44;
+taps_music = 80;
 
-wl =  2048; 
+wl =  1024; 
 
 [instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
 [speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
 
-
-[instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,1,10);
-[speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,10);
-
+if strcmp(solMode,"steepDesc") 
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",10);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,10);
+else if strcmp(solMode,"linSolve") 
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",10);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",10);
+end
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);
 speech_st_signal_w = zeros(wl,chunksNum_speech);
@@ -116,8 +112,8 @@ audiowrite("./audioOutputs/"+"whiteShaped.wav",real(sine_shaped),instr_Fs);
 %%
 
 talking_instr_lin =talking_instr_lin /max(abs(talking_instr_lin));
-audiowrite("./audioOutputs/"+talking_instr_res_name,real(talking_instr_lin),instr_Fs);
-audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
+audiowrite("./audioOutputs/"+outputFileName,real(talking_instr_lin),instr_Fs);
+%audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
 
 
 %% plots

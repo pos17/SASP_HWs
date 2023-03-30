@@ -1,6 +1,6 @@
-function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,steepDesc,numberOfCycles)
+function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,solveMode,numberOfCycles)
 
-if(steepDesc==1)
+if strcmp(solveMode,"steepDesc") 
     p = taps_number;
     [M,N] = size(st_signal); % M window length, N number of windows
     r = zeros(p+1, N);
@@ -20,19 +20,33 @@ if(steepDesc==1)
     grad_J = zeros(p,N);
     for nn = 1:N
         R(:,:,nn) = toeplitz(r_0(:,nn));
-         % adding new method for steepest descent, I think it's wrong
+         
+        
+        % adding new method for steepest descent, I think it's wrong
+         
+         
          [~,lambda] = eig(R(:,:,nn));
-         mu = 2/(max(diag(lambda))*10);
-        % for ss = 1:numberOfCycles
-            grad_J(:,nn) = -(2 *r_1(:,nn)) + (2* R(:,:,nn) * a(:,nn)); 
-            a(:,nn) = a(:,nn) - (0.5 * mu *grad_J(:,nn));
-%         while norm(grad_J) > sqrt(p*0.1)
+         max_mu = 2/(max(diag(lambda)));
+         mu = 0.95 * 2/(max(diag(lambda)));
+         
+         rapporto = max(diag(lambda)) / min(diag(lambda));
+         
+         % for ss = 1:numberOfCycles
+         
+         
+         grad_J(:,nn) = -(2 *r_1(:,nn)) + (2* R(:,:,nn) * a(:,nn)); 
+         a(:,nn) = a(:,nn) - (0.5 * mu *grad_J(:,nn));
+
+         
+         
+         %     
+%while norm(grad_J) > sqrt(p*0.1)
 %             grad_J(:,nn) = -2 *r_1(:,nn) + (2* R(:,:,nn) * a(:,nn)); 
 % 
 %             a(:,nn+1) = a(:,nn) + (0.5 * mu * - grad_J(1,nn));
 %         end
-    
-        while norm(grad_J(:,nn)) > sqrt(p*0.008)
+        cc = 0;
+        while norm(grad_J(:,nn),1)> 5*10^-2 && cc < 100000 % sqrt(p*0.0001)  
             R_a = (2* R(:,:,nn) * a(:,nn)); 
             grad_J(:,nn) = -(2 *r_1(:,nn)) + R_a;
 
@@ -40,7 +54,11 @@ if(steepDesc==1)
             
             %a(:,nn) = a(:,nn) + ( mu * ( grad_J(:,nn)));
             
-            %norm(grad_J(:,nn))
+            norm(grad_J(:,nn),1)
+            cc=cc+1;
+        end
+        if(nn<N)
+            a(:,nn+1) = a(:,nn);
         end
     end
     a_1 = zeros(p+1,N);
@@ -60,8 +78,8 @@ if(steepDesc==1)
     shapingFilters = H;
     
     whiteningFilters = A;
-
-else
+    
+else if strcmp(solveMode,"linSolve") 
     p = taps_number;
     [M,N] = size(st_signal); % M window length, N number of windows
     r = zeros(p+1, N);
@@ -90,7 +108,7 @@ else
     for nn = 1: N
         a_1(:,nn) = vertcat(1, -a(:,nn));
         
-    [A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
+        [A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
         %A(:,nn) = A(:,nn)/(mean(A(:,nn)/mean(st_signal(:,nn))));
         [H(:,nn),w] = freqz(1,a_1(:,nn),"whole",M);
         %H(:,nn) = H(:,nn)/(mean(H(:,nn))/mean(st_signal(:,nn)));
