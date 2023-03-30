@@ -72,7 +72,7 @@ if strcmp(solveMode,"steepDesc")
          
         ccc = 2;
         
-        while norm(grad_J(:,nn),1)> minThresh && ccc < cycNumMax % sqrt(p*0.0001)  
+        while norm(grad_J(:,nn),2)> minThresh && ccc < cycNumMax % sqrt(p*0.0001)  
             if (convergenceTest == 1)
                 if (nn == chosen_conv)
                      a_Steep_Conv(1,ccc) = a(comparing_conv_1,nn);

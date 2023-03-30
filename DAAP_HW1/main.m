@@ -1,7 +1,7 @@
 
 
 function [] = main(instrFileName,speechFileName, outputFileName, ...
-    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample,verbose)
+    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample_var,verbose,plotCom)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
@@ -25,7 +25,7 @@ addpath('audioOutputs')
 [speech_t,speech_Fs] = audioread(speechFileName);
 
 %% Resample
-if(resample == 1)
+if(resample_var == 1)
     fsin    = instr_Fs;
     fsout   = 16000;
     m       = lcm(fsin,fsout);
@@ -238,7 +238,7 @@ plot(w,10*log10(abs(instr_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
 title("450")
 legend("signal chunk","filter shape")
 
-sgtitle('Instrument filter comparison', FontSize=titlesize)
+sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize)
 
 
 % 
@@ -339,7 +339,7 @@ plot(w,10*log10(abs(speech_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
 title("450")
 %legend("signal chunk","filter shape","test filter shape")
 
-sgtitle('speech filter comparison', FontSize=titlesize)
+sgtitle('speech filter comparison, ' + plotCom, FontSize=titlesize)
 
 
 
