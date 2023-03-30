@@ -1,4 +1,5 @@
-function [] = main(instrFileName,speechFileName, outputFileName, solMode)
+function [] = main(instrFileName,speechFileName, outputFileName, ...
+    solMode,tuningMu,minThresh,cycNumMax,initialValues,verbose)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
@@ -30,11 +31,14 @@ wl =  1024;
 [speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
 
 if strcmp(solMode,"steepDesc") 
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",10);
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,1,10);
-else if strcmp(solMode,"linSolve") 
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",10);
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",10);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,verbose);
+elseif strcmp(solMode,"linSolve") 
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+elseif strcmp(solMode,"mixed1") 
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,verbose);
 end
 
 instr_st_signal_w = zeros(wl,chunksNum_instr);
@@ -153,8 +157,9 @@ hold on
 
 
 %xlim([0,1])
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape" )%,"test filter shape")
 
 
 figure 
 plot(talking_instr_lin)
+end
