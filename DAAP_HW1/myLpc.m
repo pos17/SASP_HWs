@@ -1,5 +1,11 @@
 function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,...
-    solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,verbose)
+ solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,verbose)
+axlabelsize = 15;
+titlesize = 22;
+legendsize = 15;
+
+
+
 % initialValues:    ones array of ones
 %                   zeros array of zeros
 %                   prev previous values of the previous chunk

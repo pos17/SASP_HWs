@@ -1,12 +1,13 @@
+
+
 function [] = main(instrFileName,speechFileName, outputFileName, ...
-    solMode,tuningMu,minThresh,cycNumMax,initialValues,verbose)
+    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample,verbose)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
 %
 %   solMode = "steepDesc" or "linSolve"                                                                         %  
 %=========================================================================%
-clc; close all; clear all;
 axlabelsize = 15;
 titlesize = 22;
 legendsize = 15;
@@ -24,24 +25,24 @@ addpath('audioOutputs')
 [speech_t,speech_Fs] = audioread(speechFileName);
 
 %% Resample
-
-fsin    = instr_Fs;
-fsout   = 16000;
-m       = lcm(fsin,fsout);
-up      = m/fsin;
-down    = m/fsout;
-instr_t    = resample(instr_t, up, down);
-%audiowrite([a_filename,'_22050','.wav'], x_22, fsout);
-instr_Fs=fsout;
-
-fsin    = speech_Fs;
-fsout   = 16000;
-m       = lcm(fsin,fsout);
-up      = m/fsin;
-down    = m/fsout;
-speech_t    = resample(speech_t, up, down);
-speech_Fs=fsout;
-
+if(resample == 1)
+    fsin    = instr_Fs;
+    fsout   = 16000;
+    m       = lcm(fsin,fsout);
+    up      = m/fsin;
+    down    = m/fsout;
+    instr_t    = resample(instr_t, up, down);
+    %audiowrite([a_filename,'_22050','.wav'], x_22, fsout);
+    instr_Fs=fsout;
+    
+    fsin    = speech_Fs;
+    fsout   = 16000;
+    m       = lcm(fsin,fsout);
+    up      = m/fsin;
+    down    = m/fsout;
+    speech_t    = resample(speech_t, up, down);
+    speech_Fs=fsout;
+end
 %%
 
 speech_t(end+1:length(instr_t),1) =0;
@@ -162,7 +163,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
 title("50")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 
 subplot(3,3,2); 
@@ -172,7 +173,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
 title("100")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,3); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,150)).^2))
@@ -181,7 +182,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
 title("150")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,4); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,200)).^2))
@@ -190,7 +191,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
 title("200")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,5); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,250)).^2))
@@ -199,7 +200,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
 title("250")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,6); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,300)).^2))
@@ -208,7 +209,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
 title("300")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,7); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,350)).^2))
@@ -217,7 +218,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
 title("350")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,8); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,400)).^2))
@@ -226,7 +227,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
 title("400")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,9); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,450)).^2))
@@ -235,7 +236,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
 title("450")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 sgtitle('Instrument filter comparison', FontSize=titlesize)
 
@@ -264,7 +265,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
 title("50")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,2); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,100)).^2))
@@ -273,7 +274,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
 title("100")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,3); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,150)).^2))
@@ -282,7 +283,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
 title("150")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,4); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,200)).^2))
@@ -291,7 +292,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
 title("200")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,5); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,250)).^2))
@@ -300,7 +301,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
 title("250")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,6); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,300)).^2))
@@ -309,7 +310,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
 title("300")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,7); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,350)).^2))
@@ -318,7 +319,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
 title("350")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,8); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,400)).^2))
@@ -327,7 +328,7 @@ ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
 title("400")
-legend("signal chunk","filter shape","test filter shape")
+legend("signal chunk","filter shape")
 
 subplot(3,3,9); 
 plot(w,10*log10(abs(speech_st_signal_w(1:end/2,450)).^2))
@@ -336,7 +337,7 @@ ylabel("frequency [Hz]")
 hold on 
 plot(w,10*log10(abs(speech_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
 title("450")
-legend("signal chunk","filter shape","test filter shape")
+%legend("signal chunk","filter shape","test filter shape")
 
 sgtitle('speech filter comparison', FontSize=titlesize)
 
