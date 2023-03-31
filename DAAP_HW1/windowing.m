@@ -55,8 +55,8 @@ if (verbose == 1)
     title("TEST TO SEE IF COLA CONDITION IS RESPECTED")
 end
 
-figure
-plot(w)
-hold on
-plot(shortTimeSignal(:,200))
+% figure
+% plot(w)
+% hold on
+% plot(shortTimeSignal(:,200))
 numOfChunks = chunks_num;

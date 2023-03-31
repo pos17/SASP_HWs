@@ -148,232 +148,83 @@ audiowrite("./audioOutputs/"+outputFileName,real(talking_instr_lin),instr_Fs);
 axlabelsize = 15;
 titlesize = 22;
 legendsize = 15;
-w = linspace(0,instr_Fs/2,wl/2);
 
 % Instrument vs filter spectrum comparison 
- 
-figure('Renderer', 'painters', 'Position', [10 10 1000 600])
-
-subplot(3,3,1); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,50).^2)))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
-title("50")
-legend("signal chunk","filter shape")
-
-subplot(3,3,2); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,100)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
-title("100")
-legend("signal chunk","filter shape")
-
-subplot(3,3,3); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,150)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
-title("150")
-legend("signal chunk","filter shape")
-
-subplot(3,3,4); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,200)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
-title("200")
-legend("signal chunk","filter shape")
-
-subplot(3,3,5); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,250)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
-title("250")
-legend("signal chunk","filter shape")
-
-subplot(3,3,6); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,300)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
-title("300")
-legend("signal chunk","filter shape")
-
-subplot(3,3,7); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,350)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
-title("350")
-legend("signal chunk","filter shape")
-
-subplot(3,3,8); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,400)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
-title("400")
-legend("signal chunk","filter shape")
-
-subplot(3,3,9); 
-plot(w,10*log10(abs(instr_st_signal_w(1:end/2,450)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(instr_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
-title("450")
-legend("signal chunk","filter shape")
-
-sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize)
-
-
-% 
-% figure
-% title("speech filter comparison")
-% plot(w,10*log10(abs(speech_st_signal_w(:,100)).^2))
-% %plot(w,abs(st_signal_w(:,600)))
-% hold on 
-% plot(w,10*log10(abs(speech_H(:,100)).^2),"Linestyle","-", "Linewidth",1.3)
-% %plot(w,abs(H(:,600)))
-% hold on 
-% %plot(w,10*log10(abs(H_test(:,600)).^2),"Linestyle","-", "Linewidth",1.3)
-% %plot(w,abs(H(:,600)))
-
-
 
 w = linspace(0,instr_Fs/2,wl/2);
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
 
-subplot(3,3,1); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,50)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
-title("50")
-legend("signal chunk","filter shape")
+for i=1:9
+    subplot(3,3,i); 
+    index=i*floor(chunksNum_instr/9);
+    plot(w,10*log10(abs(instr_st_signal_w(1:end/2,index)).^2));
+    xlabel("frequency [Hz]",Interpreter="latex");
+    ylabel("[dB]",Interpreter="latex");
+    hold on 
+    plot(w,10*log10(abs(instr_H(1:end/2,index)).^2),"Linestyle","-", "Linewidth",1.3)
+    title(index,Interpreter='Latex');
+    legend("signal chunk","filter shape",Interpreter='Latex');
+    %legend('boxoff');
+end
+sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize, Interpreter='Latex');
 
-subplot(3,3,2); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,100)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,100)).^2),"Linestyle","-", "Linewidth",1.3)
-title("100")
-legend("signal chunk","filter shape")
+% Speech vs filter spectrum comparison 
 
-subplot(3,3,3); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,150)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,150)).^2),"Linestyle","-", "Linewidth",1.3)
-title("150")
-legend("signal chunk","filter shape")
+w = linspace(0,speech_Fs/2,wl/2);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
 
-subplot(3,3,4); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,200)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,200)).^2),"Linestyle","-", "Linewidth",1.3)
-title("200")
-legend("signal chunk","filter shape")
+for i=1:9
+    subplot(3,3,i); 
+    index=i*floor(chunksNum_instr/9);
+    plot(w,10*log10(abs(speech_st_signal_w(1:end/2, index)).^2));
+    xlabel("frequency [Hz]",Interpreter="latex");
+    ylabel("[dB]",Interpreter="latex");
+    hold on 
+    plot(w,10*log10(abs(speech_H(1:end/2,index).^2)),"Linestyle","-", "Linewidth",1.3);
+    title(index,Interpreter='Latex');
+    legend("signal chunk","filter shape",Interpreter='Latex');
+    %legend('boxoff');
 
-subplot(3,3,5); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,250)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,250)).^2),"Linestyle","-", "Linewidth",1.3)
-title("250")
-legend("signal chunk","filter shape")
+end
+sgtitle('Speech filter comparison'+plotCom, FontSize=titlesize, Interpreter='Latex');
 
-subplot(3,3,6); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,300)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,300)).^2),"Linestyle","-", "Linewidth",1.3)
-title("300")
-legend("signal chunk","filter shape")
+% Power spectrograms
 
-subplot(3,3,7); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,350)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,350)).^2),"Linestyle","-", "Linewidth",1.3)
-title("350")
-legend("signal chunk","filter shape")
+figure('Renderer', 'painters', 'Position', [10 10 1000 700])
 
-subplot(3,3,8); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,400)).^2))
-xlabel("frequency [Hz]")
-ylabel("[dB]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,400)).^2),"Linestyle","-", "Linewidth",1.3)
-title("400")
-legend("signal chunk","filter shape")
-
-subplot(3,3,9); 
-plot(w,10*log10(abs(speech_st_signal_w(1:end/2,450)).^2))
-xlabel("frequency [Hz]")
-ylabel("frequency [Hz]")
-hold on 
-plot(w,10*log10(abs(speech_H(1:end/2,450)).^2),"Linestyle","-", "Linewidth",1.3)
-title("450")
-%legend("signal chunk","filter shape","test filter shape")
-
-sgtitle('speech filter comparison, ' + plotCom, FontSize=titlesize)
-
-
-%% spectrogram
-Fs = instr_Fs;
-w1   = linspace(0,instr_Fs/2,wl/2);
-figure
+subplot(311);
+w1 = linspace(0,instr_Fs/2,wl/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_instr);
-st_signal_w1 = instr_st_signal_w(1:512,:);
-surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
-ylim([0 3000])
-view(0,90)
-disp(st_signal_w1(1,400))
+instr_st_signal_w_ps = instr_st_signal_w(1:wl/2,:);
+surf(t,w1,(abs(instr_st_signal_w_ps).^2)./(max(abs(instr_st_signal_w_ps).^2)),EdgeColor="none");
+ylim([0 2000]);
+view(0,90);
+xlabel("time [s]",Interpreter="latex");
+ylabel("frequency [Hz]",Interpreter="latex");
+title('Piano',Interpreter='Latex');
 
-Fs = speech_Fs;
-w1   = linspace(0,instr_Fs/2,wl/2);
-figure
+subplot(312)
+w1 = linspace(0,speech_Fs/2,wl/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
-st_signal_w1 = speech_st_signal_w(1:512,:);
-surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
-ylim([0 3000])
-view(0,90)
-disp(st_signal_w1(1,400))
-
-%xlim([0,1])
-legend("signal chunk","filter shape" )%,"test filter shape")
-
-Fs = speech_Fs;
-w1   = linspace(0,instr_Fs/2,wl/2);
-figure
-t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
-st_signal_w1 = talking_instr_st_res_w(1:512,:);
-surf(t,w1,abs(st_signal_w1).^2./(max(abs(st_signal_w1).^2)),EdgeColor="none");
+speech_st_signal_w_ps = speech_st_signal_w(1:wl/2,:);
+surf(t,w1,(abs(speech_st_signal_w_ps).^2)./(max(abs(speech_st_signal_w_ps).^2)),EdgeColor="none");
 %ylim([0 3000])
-view(0,90)
-disp(st_signal_w1(1,400))
+view(0,90);
+xlabel("time [s]",Interpreter="latex");
+ylabel("frequency [Hz]",Interpreter="latex");
+title('Speech',Interpreter='Latex');
+ 
+subplot(313)
+w1 = linspace(0,speech_Fs/2,wl/2);
+t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
+talking_instr_st_res_w_ps = talking_instr_st_res_w(1:wl/2,:);
+surf(t,w1,abs(talking_instr_st_res_w_ps).^2./(max(abs(talking_instr_st_res_w_ps).^2)),EdgeColor="none");
+%ylim([0 3000])
+view(0,90);
+xlabel("time [s]",Interpreter="latex");
+ylabel("frequency [Hz]",Interpreter="latex");
+title('Talking instrument',Interpreter='Latex');
 
-%%
-figure 
-plot(talking_instr_lin)
+sgtitle('Spectrogram', FontSize=titlesize, Interpreter='Latex');
+
 end
