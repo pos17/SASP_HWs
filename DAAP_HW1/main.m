@@ -46,10 +46,10 @@ instr_t_len =length(instr_t);
 taps_speech = 44;
 taps_music = 80;
 
-wl =  1024; 
+wl =  2048; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl,verbose);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl,verbose);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hamming",wl,instr_Fs,verbose);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hamming",wl,speech_Fs,verbose);
 
 if strcmp(solMode,"steepDesc") 
     [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
@@ -107,8 +107,8 @@ end
 
 %st_res_lin = reshape(st_res,[t_buckets *wl 1]);
 
-talking_instr_lin = adding(talking_instr_st_res,0.5,wl);
-instr_lin = adding(instr_st_res,0.5,wl);
+talking_instr_lin = adding(talking_instr_st_res,"hann",wl);
+instr_lin = adding(instr_st_res,"hann",wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = st_res_lin / mean(st_res_lin);
@@ -344,7 +344,7 @@ Fs = instr_Fs;
 w1   = linspace(0,instr_Fs/2,wl/2);
 figure
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_instr);
-st_signal_w1 = instr_st_signal_w(1:512,:);
+st_signal_w1 = instr_st_signal_w(1:wl/2,:);
 surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
 ylim([0 3000])
 view(0,90)
@@ -354,7 +354,7 @@ Fs = speech_Fs;
 w1   = linspace(0,instr_Fs/2,wl/2);
 figure
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
-st_signal_w1 = speech_st_signal_w(1:512,:);
+st_signal_w1 = speech_st_signal_w(1:wl/2,:);
 surf(t,w1,(abs(st_signal_w1).^2)./(max(abs(st_signal_w1).^2)),EdgeColor="none");
 ylim([0 3000])
 view(0,90)
@@ -367,7 +367,7 @@ Fs = speech_Fs;
 w1   = linspace(0,instr_Fs/2,wl/2);
 figure
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
-st_signal_w1 = talking_instr_st_res_w(1:512,:);
+st_signal_w1 = talking_instr_st_res_w(1:wl/2,:);
 surf(t,w1,abs(st_signal_w1).^2./(max(abs(st_signal_w1).^2)),EdgeColor="none");
 %ylim([0 3000])
 view(0,90)

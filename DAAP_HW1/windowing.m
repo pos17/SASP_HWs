@@ -1,4 +1,4 @@
-function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,windowLength,verbose)
+function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,windowLength,Fs,verbose)
 
 %==========================================================================
 
@@ -9,18 +9,28 @@ function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,windowLengt
 nZeroPad =0;
 M = windowLength;
 if(strcmp(windowType,"rectwin"))
-
     w = rectwin(windowLength);
     R = M;
 elseif(strcmp(windowType,"bartlett"))
     w = bartlett(windowLength);
     R = M/2;
+    % zero padding adding half windowlenght    
+    % before signal samples to have full signal
+    signal_pad = zeros(M + length(signal),1);
+    signal_pad(M/2+1:M/2+length(signal)) = signal;
+
 elseif(strcmp(windowType,"hamming"))
     w = hamming(windowLength,"periodic");
     R = M/2;
+    signal_pad = zeros(M + length(signal),1);
+    signal_pad(M/2+1:M/2+length(signal)) = signal;
 elseif(strcmp(windowType,"hann"))
     w = hann(windowLength,"periodic");
     R= M/2;
+    signal_pad = zeros(M + length(signal),1);
+    %sg = signal_pad(M/2+1:M/2+length(signal));
+    signal_pad(M/2+1:M/2+length(signal)) = signal;
+    signal = signal_pad;
 else 
     disp("wrong name use of rect window!")
     w = rectwin(windowLength);
@@ -46,13 +56,15 @@ end
 if (verbose == 1) 
     shortTimeWindows = zeros(M,chunks_num);    
     for nn = 1:chunks_num
-        shortTimeWindows(:,ii) = w;
+        shortTimeWindows(:,nn) = w;
     end
     % sum test before adding 
-    addedWindows = adding(shortTimeWindows,R,windowLength);
+    addedWindows = adding(shortTimeWindows,windowType,windowLength);
     figure
-    plot(1:length(addedWindows),addedWindows);
-    title("TEST TO SEE IF COLA CONDITION IS RESPECTED")
+    plot(linspace(0,length(addedWindows)/Fs,length(addedWindows)),addedWindows,"b-o");
+    title("TEST FOR COLA CONDITION")
+    ylim([0.9,1.1]);
+    xlim([-0.3,length(addedWindows)/Fs+0.3]);
 end
 
 figure
