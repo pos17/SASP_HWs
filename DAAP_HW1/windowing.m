@@ -77,9 +77,12 @@ if (verbose == 1)
     figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
     titlesize = 22;
     plot(linspace(0,length(addedWindows)/Fs,length(addedWindows)),addedWindows,"b-o");
-    title("Test for cola condition", Interpreter='latex',FontSize=titlesize);
+    xlabel("time [s]",Interpreter="latex");
+    ylabel("Windows' sum magnitude ",Interpreter="latex");
     ylim([0.9,1.1]);
     xlim([-0.3,length(addedWindows)/Fs+0.3]);
+    title("Test for cola condition", Interpreter='latex',FontSize=titlesize);
+    
     grid minor
 end
 numOfChunks = chunks_num;

@@ -1,5 +1,5 @@
 function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,...
- solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,verbose)
+ solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,Fs,verbose)
 
 axlabelsize = 15;
 titlesize = 22;
@@ -181,6 +181,8 @@ elseif strcmp(solveMode,"linSolve")
         plot(a_test,"k+");
         hold on
         plot(a_1_check,"ro");
+        xlabel("tap index",Interpreter="latex");
+        ylabel("coefficient value",Interpreter="latex");
         legend('lpc function','custom function',Interpreter='latex');
         grid minor
         
@@ -189,15 +191,19 @@ elseif strcmp(solveMode,"linSolve")
         [H_freqz,~] = freqz(1,a_1_check,"whole",M);
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
 
+        w_freq = linspace(0,Fs,length(w));
+
         figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
-        plot(w,abs(H_fft(:,ceil(N/3))).^2,"k-+");
+        plot(w_freq,10*log10(abs(H_fft(:,ceil(N/3))).^2),"k-+");
         hold on
-        plot(w,abs(H_freqz).^2,"b--");
+        plot(w_freq,10*log10(abs(H_freqz).^2),"b--");
         hold on
-        plot(w,abs(H_freqz_lpc).^2,"ro");
+        plot(w_freq,10*log10(abs(H_freqz_lpc).^2),"ro");
+        xlabel("tap index",Interpreter="latex");
+        ylabel("[dB]",Interpreter="latex");
         legend('lpc freqz filter','custom freqz filter','custom fft filter',Interpreter='latex');
         title("Test between power spectrum of LPC, freqz, custom made filters", Interpreter='latex',FontSize=titlesize);
-        xlim([0 0.5]);
+        xlim([0 Fs/2]);
         grid minor
     end
     shapingFilters = H_fft;

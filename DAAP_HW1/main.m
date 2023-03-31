@@ -57,29 +57,29 @@ if strcmp(solMode,"steepDesc")
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose);
 elseif strcmp(solMode,"linSolve") 
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,speech_Fs,verbose);
 elseif strcmp(solMode,"mixed1") 
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose);
 end
 
 instr_st_signal_w = zeros(wl_instr,chunksNum_instr);
