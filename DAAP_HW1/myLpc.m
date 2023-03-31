@@ -174,11 +174,13 @@ elseif strcmp(solveMode,"linSolve")
         a_check = a(:,ceil(N/2));
         a_1_check = vertcat(1, -a_check);
         %[H_test,w] = freqz(1,a_1_test,"whole",M);
-        figure
-        plot(a_test,"ko");
+        figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
+        titlesize = 22;
+        plot(a_test,"k+");
         hold on
         plot(a_1_check,"ro");
-        title("Test between LPC and custom made method");
+        title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
+        legend('lpc function','custom function',Interpreter='latex');
     end
     shapingFilters = H;
     
