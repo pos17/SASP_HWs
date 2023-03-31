@@ -13,7 +13,7 @@ talking_instr_res_name = "talking_instr_res.wav";
 close all;
 tic
 talking_instr_res_name = "talking_instr_verb1.wav";
-main(instr_name, speech_name, talking_instr_res_name,2048,4096,44,100,"linSolve",0.3,10^-1,100000,"zeros",0,0,1,"threshold 10^(-1)","mean");
+main(instr_name, speech_name, talking_instr_res_name,2048,4096,44,100,"linSolve",0.3,10^-1,100000,"zeros",0,0,1,"threshold $10^{-1}$","mean");
 toc
 
 %% test for various threshold values using steepest descent

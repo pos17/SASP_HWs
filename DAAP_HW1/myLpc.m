@@ -192,13 +192,14 @@ elseif strcmp(solveMode,"linSolve")
         
         [H_freqz,~] = freqz(1,a_1_check,"whole",M);
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
-        figure
+
+        figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
         plot(w,abs(H_fft(:,ceil(N/3))).^2,"k-+");
         hold on
         plot(w,abs(H_freqz).^2,"b--");
         hold on
         plot(w,abs(H_freqz_lpc).^2,"ro");
-        title("Test between LPC and custom made filters ", Interpreter='latex',FontSize=titlesize);
+        title("Test between LPC, freqz, custom made filters", Interpreter='latex',FontSize=titlesize);
         xlim([0 0.5]);
         grid minor
     end
