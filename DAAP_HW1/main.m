@@ -170,6 +170,7 @@ for i=1:9
     plot(w,10*log10(abs(instr_H(1:end/2,index)).^2),"Linestyle","-", "Linewidth",1.3)
     title(index,Interpreter='Latex');
     legend("signal chunk","filter shape",Interpreter='Latex');
+    grid minor
     %legend('boxoff');
 end
 sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize, Interpreter='Latex');
@@ -189,10 +190,11 @@ for i=1:9
     plot(w,10*log10(abs(speech_H(1:end/2,index).^2)),"Linestyle","-", "Linewidth",1.3);
     title(index,Interpreter='Latex');
     legend("signal chunk","filter shape",Interpreter='Latex');
+    grid minor
     %legend('boxoff');
 
 end
-sgtitle('Speech filter comparison'+plotCom, FontSize=titlesize, Interpreter='Latex');
+sgtitle('Speech filter comparison, ' +plotCom, FontSize=titlesize, Interpreter='Latex');
 
 % Power spectrograms
 if spec == 1

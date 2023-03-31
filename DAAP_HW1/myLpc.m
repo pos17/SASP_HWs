@@ -1,5 +1,6 @@
 function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,...
  solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,verbose)
+
 axlabelsize = 15;
 titlesize = 22;
 legendsize = 15;
@@ -118,7 +119,8 @@ if strcmp(solveMode,"steepDesc")
     
     if (convergenceTest == 1) 
         a_test_Conv = lpc(st_signal(:,chosen_conv),p);
-        figure 
+  
+        figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
         %for ii= 1:length(a_Steep_Conv)
         %    plot(-a_Steep_Conv(1,ii),-a_Steep_Conv(2,ii),'k-o')
         %    hold on
@@ -126,6 +128,13 @@ if strcmp(solveMode,"steepDesc")
         plot(-a_Steep_Conv(1,:),-a_Steep_Conv(2,:),'k-o')
         hold on
         plot(a_test_Conv(1,comparing_conv_1 +1),a_test_Conv(1,comparing_conv_2 +1),'ro')
+        xlabel("$a_{1}$ ",Interpreter="latex");
+        ylabel("$a_{2}$ ",Interpreter="latex");
+        legend('iterations','target point',Interpreter='latex');
+        grid minor
+        
+        title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
+        
     end
 
     
@@ -177,11 +186,11 @@ elseif strcmp(solveMode,"linSolve")
         
         %[H_test,w] = freqz(1,a_1_test,"whole",M);
         figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
-        titlesize = 22;
-        plot(a_test,"k+");
+        plot(a_test,"k-+");
         hold on
-        plot(a_1_check,"ro");
+        plot(a_1_check,"r-o");
         legend('lpc function','custom function',Interpreter='latex');
+        grid minor
         
         title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
         
@@ -189,14 +198,15 @@ elseif strcmp(solveMode,"linSolve")
         H_fft = 1./A_fft;
         H_fft = H_fft';
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
-        figure
+        figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
         plot(w,abs(H_fft).^2,"k-*");
         hold on
         plot(w,abs(H(:,ceil(N/3))).^2,"b--");
         hold on
         plot(w,abs(H_freqz_lpc).^2,"ro");
-        title("Test between LPC and custom made filters ");
+        title("Test between LPC and custom made filters ", Interpreter='latex',FontSize=titlesize);
         xlim([0 0.5]);
+        grid minor
     end
     shapingFilters = H;
     
