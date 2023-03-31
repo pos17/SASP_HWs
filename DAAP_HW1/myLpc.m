@@ -11,7 +11,7 @@ legendsize = 15;
 %                   prev previous values of the previous chunk
 if strcmp(solveMode,"steepDesc") 
    
-   comparing_conv_1 = 3;
+   comparing_conv_1 = 1;
    comparing_conv_2 = 4;
     p = taps_number;
     [M,N] = size(st_signal); % M window length, N number of windows

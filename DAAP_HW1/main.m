@@ -1,5 +1,5 @@
 function [] = main(instrFileName,speechFileName, outputFileName, ...
-    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample_var,verbose,plotCom)
+    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample_var,spec,verbose,plotCom)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
@@ -195,7 +195,7 @@ end
 sgtitle('Speech filter comparison'+plotCom, FontSize=titlesize, Interpreter='Latex');
 
 % Power spectrograms
-
+if spec == 1
 figure('Renderer', 'painters', 'Position', [10 10 1000 700])
 
 subplot(311);
@@ -232,5 +232,5 @@ ylabel("frequency [Hz]",Interpreter="latex");
 title('Talking instrument',Interpreter='Latex');
 
 sgtitle('Spectrogram', FontSize=titlesize, Interpreter='Latex');
-
+end
 end
