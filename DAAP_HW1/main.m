@@ -363,11 +363,9 @@ ylim([0 3000])
 view(0,90)
 disp(st_signal_w1(1,400))
 
-<<<<<<< Updated upstream
 %xlim([0,1])
 legend("signal chunk","filter shape" )%,"test filter shape")
 
-=======
 Fs = speech_Fs;
 w1   = linspace(0,instr_Fs/2,wl/2);
 figure
@@ -377,7 +375,6 @@ surf(t,w1,abs(st_signal_w1).^2./(max(abs(st_signal_w1).^2)),EdgeColor="none");
 %ylim([0 3000])
 view(0,90)
 disp(st_signal_w1(1,400))
->>>>>>> Stashed changes
 
 %%
 figure 
