@@ -136,9 +136,9 @@ if strcmp(solveMode,"steepDesc")
     end
 
     
-    shapingFilters = H;
+    shapingFilters = H_fft;
     
-    whiteningFilters = A;
+    whiteningFilters = A_fft;
     
 elseif strcmp(solveMode,"linSolve") 
     p = taps_number;
@@ -188,7 +188,7 @@ elseif strcmp(solveMode,"linSolve")
         legend('lpc function','custom function',Interpreter='latex');
         grid minor
         
-        title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
+        title("Test between power spectrum of LPC and custom made method",Interpreter='latex',FontSize=titlesize);
         
         [H_freqz,~] = freqz(1,a_1_check,"whole",M);
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
@@ -199,7 +199,8 @@ elseif strcmp(solveMode,"linSolve")
         plot(w,abs(H_freqz).^2,"b--");
         hold on
         plot(w,abs(H_freqz_lpc).^2,"ro");
-        title("Test between LPC, freqz, custom made filters", Interpreter='latex',FontSize=titlesize);
+        legend('lpc freqz filter','custom freqz filter','custom fft filter',Interpreter='latex');
+        title("Test between power spectrum of LPC, freqz, custom made filters", Interpreter='latex',FontSize=titlesize);
         xlim([0 0.5]);
         grid minor
     end
