@@ -1,11 +1,14 @@
-%function [addedSignal] = adding(shortTimeSignal,windowOverLap,windowLength)
-function [addedSignal] = adding(shortTimeSignal,windowType,windowLength)
-
 % =========================================================================
-% windowOverLap: overLap of the windows as a fractional number
+% adding function for restoring audio signal from short-time
+% windowType gives the overlap assigned in the windowing function
 % 
 %
 % =========================================================================
+
+
+
+function [addedSignal] = adding(shortTimeSignal,windowType,windowLength)
+
 M = windowLength;
 if(strcmp(windowType,"rectwin"))
      R = M;

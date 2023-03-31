@@ -1,5 +1,7 @@
-function [] = main(instrFileName,speechFileName, outputFileName, ...
-    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample_var,spec,verbose,plotCom)
+function [] = main(instrFileName,speechFileName, outputFileName,...
+    wl_speech,wl_instr,taps_speech,taps_music,solMode,tuningMu,...
+    minThresh,cycNumMax,initialValues,resample_var,spec,verbose,plotCom,...
+    normalize)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
@@ -43,13 +45,13 @@ end
 speech_t(end+1:length(instr_t),1) =0;
 instr_t_len =length(instr_t);
 
-taps_speech = 44;
-taps_music = 80;
+%taps_speech = 44;
+%taps_music = 80;
 
-wl =  2048; 
+%wl_speech =  2048; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl,instr_Fs,verbose);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl,speech_Fs,verbose);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl_instr,instr_Fs,verbose);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl_speech,speech_Fs,verbose);
 
 if strcmp(solMode,"steepDesc") 
     [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
@@ -62,22 +64,50 @@ elseif strcmp(solMode,"mixed1")
     [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,verbose);
 end
 
-instr_st_signal_w = zeros(wl,chunksNum_instr);
-speech_st_signal_w = zeros(wl,chunksNum_speech);
+instr_st_signal_w = zeros(wl_instr,chunksNum_instr);
+instr_st_res = zeros(wl_instr,chunksNum_instr);
+instr_st_res_w = zeros(wl_instr,chunksNum_instr);
+speech_st_signal_w = zeros(wl_speech,chunksNum_speech);
 
 for nn = 1:chunksNum_instr
     instr_st_signal_w(:,nn) = fft(instr_st_signal(:,nn));
-    speech_st_signal_w(:,nn) = fft(speech_st_signal(:,nn));
-    
+
+    if(normalize == "mean")
+        instr_H(:,nn) = (instr_H(:,nn)/mean(abs(instr_H(:,nn))))*mean(abs(instr_st_signal_w(:,nn)));
+    elseif(normalize == "max")
+        instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+    elseif(normalize == "none")
+    end
+
+    instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);   
+    instr_st_res(:,nn) = ifft(instr_st_res_w(:,nn));
+   
+end
+
+instr_lin = adding(instr_st_res,"hann",wl_instr);
+instr_lin = instr_lin(1:length(speech_t));
+[instr_st_signal_speech,chunksNum_instr_speech] = windowing(instr_lin,"hann",wl_speech,instr_Fs,verbose);
+
+%instr_st_res =  zeros(wl_instr, chunksNum_instr); 
+%instr_st_res_w = zeros(wl_instr,chunksNum_instr);
+talking_instr_st_res =  zeros(wl_speech, chunksNum_instr); 
+talking_instr_st_res_w = zeros(wl_speech,chunksNum_instr);
+for nn = 1:chunksNum_instr_speech
+   speech_st_signal_w(:,nn) = fft(speech_st_signal(:,nn));
+   instr_st_signal_speech_w(:,nn) = fft(instr_st_signal_speech(:,nn));
+   if(normalize == "mean")
+        speech_H(:,nn) = (speech_H(:,nn)/mean(abs(speech_H(:,nn))))*mean(abs(speech_st_signal_w(:,nn)));    
+   elseif(normalize == "max")
+        speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
+   elseif(normalize == "none")
+   end
+   talking_instr_st_res_w(:,nn) = instr_st_signal_speech_w(:,nn) .* speech_H(:,nn);
+   talking_instr_st_res(:,nn) = ifft(talking_instr_st_res_w(:,nn));  
 end
 
 
-for nn = 1:chunksNum_instr
-   %instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
-   %speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
-   instr_H(:,nn) = (instr_H(:,nn)/mean(abs(instr_H(:,nn))))*mean(abs(instr_st_signal_w(:,nn)));
-   speech_H(:,nn) = (speech_H(:,nn)/mean(abs(speech_H(:,nn))))*mean(abs(speech_st_signal_w(:,nn)));    
-end
+
+
 % M_instr_H = max(abs(instr_H), [], 'all');
 % M_instr_sig_st = max(abs(instr_st_signal_w), [], 'all');
 % M_speech_H = max(abs(speech_H), [], 'all');
@@ -88,21 +118,13 @@ end
 
 
 
-instr_st_res =  zeros(wl, chunksNum_instr); 
-instr_st_res_w = zeros(wl,chunksNum_instr);
-talking_instr_st_res =  zeros(wl, chunksNum_instr); 
-talking_instr_st_res_w = zeros(wl,chunksNum_instr);
-for nn = 1:chunksNum_instr
-    %instr_A(:,nn) = instr_A(:,nn)/(mean(instr_A(:,nn)/mean(instr_st_signal_w(:,nn))));
-    
-    %instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn).* instr_A(:,nn);
-    instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);
-    
-    talking_instr_st_res_w(:,nn) = instr_st_res_w(:,nn) .* speech_H(:,nn);
-    %st_res_w(:,nn) = st_signal_w(:,nn)./ H(:,nn);
-    instr_st_res(:,nn) = ifft(instr_st_res_w(:,nn));
-    talking_instr_st_res(:,nn) = ifft(talking_instr_st_res_w(:,nn));
-end
+
+% for nn = 1:chunksNum_instr
+%     instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);   
+%     talking_instr_st_res_w(:,nn) = instr_st_res_w(:,nn) .* speech_H(:,nn);
+%     instr_st_res(:,nn) = ifft(instr_st_res_w(:,nn));
+%     talking_instr_st_res(:,nn) = ifft(talking_instr_st_res_w(:,nn));
+% end
 
 % try to normalize output
 
@@ -113,8 +135,8 @@ end
 
 %st_res_lin = reshape(st_res,[t_buckets *wl 1]);
 
-talking_instr_lin = adding(talking_instr_st_res,"hann",wl);
-instr_lin = adding(instr_st_res,"hann",wl);
+talking_instr_lin = adding(talking_instr_st_res,"hann",wl_speech);
+
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = st_res_lin / mean(st_res_lin);
@@ -157,7 +179,7 @@ legendsize = 15;
 
 % Instrument vs filter spectrum comparison 
 
-w = linspace(0,instr_Fs/2,wl/2);
+w = linspace(0,instr_Fs/2,wl_instr/2);
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
 
 for i=1:9
@@ -177,12 +199,12 @@ sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize, Interpre
 
 % Speech vs filter spectrum comparison 
 
-w = linspace(0,speech_Fs/2,wl/2);
+w = linspace(0,speech_Fs/2,wl_speech/2);
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
 
 for i=1:9
     subplot(3,3,i); 
-    index=i*floor(chunksNum_instr/9);
+    index=i*floor(chunksNum_speech/9);
     plot(w,10*log10(abs(speech_st_signal_w(1:end/2, index)).^2));
     xlabel("frequency [Hz]",Interpreter="latex");
     ylabel("[dB]",Interpreter="latex");
@@ -201,7 +223,7 @@ if spec == 1
 figure('Renderer', 'painters', 'Position', [10 10 1000 700])
 
 subplot(311);
-w1 = linspace(0,instr_Fs/2,wl/2);
+w1 = linspace(0,instr_Fs/2,wl_instr/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_instr);
 instr_st_signal_w_ps = instr_st_signal_w(1:wl/2,:);
 surf(t,w1,(abs(instr_st_signal_w_ps).^2)./(max(abs(instr_st_signal_w_ps).^2)),EdgeColor="none");
@@ -212,7 +234,7 @@ ylabel("frequency [Hz]",Interpreter="latex");
 title('Piano',Interpreter='Latex');
 
 subplot(312)
-w1 = linspace(0,speech_Fs/2,wl/2);
+w1 = linspace(0,speech_Fs/2,wl_speech/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
 speech_st_signal_w_ps = speech_st_signal_w(1:wl/2,:);
 surf(t,w1,(abs(speech_st_signal_w_ps).^2)./(max(abs(speech_st_signal_w_ps).^2)),EdgeColor="none");
@@ -223,7 +245,7 @@ ylabel("frequency [Hz]",Interpreter="latex");
 title('Speech',Interpreter='Latex');
  
 subplot(313)
-w1 = linspace(0,speech_Fs/2,wl/2);
+w1 = linspace(0,speech_Fs/2,wl_speech/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
 talking_instr_st_res_w_ps = talking_instr_st_res_w(1:wl/2,:);
 surf(t,w1,abs(talking_instr_st_res_w_ps).^2./(max(abs(talking_instr_st_res_w_ps).^2)),EdgeColor="none");

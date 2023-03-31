@@ -103,18 +103,16 @@ if strcmp(solveMode,"steepDesc")
         end 
     end
     a_1 = zeros(p+1,N);
-    A = zeros(M,N);
-    H = zeros(M,N);
+    A_fft = zeros(M,N);
+    H_fft = zeros(M,N);
     
     for nn = 1: N
         a_1(:,nn) = vertcat(1, -a(:,nn));
         
-        [A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
-        %A(:,nn) = A(:,nn)/(mean(A(:,nn)/mean(st_signal(:,nn))));
-        [H(:,nn),w] = freqz(1,a_1(:,nn),"whole",M);
-        %H(:,nn) = H(:,nn)/(mean(H(:,nn))/mean(st_signal(:,nn)));
-        %A(:,nn) = 1/(H(:,nn));
-        
+        %[A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
+        %[H(:,nn),w] = freqz(1,a_1(:,nn),"whole",M);
+        A_fft(:,nn) = fft(a_1(:,nn),M);
+        H_fft(:,nn) = 1./A_fft(:,nn);
     end 
     
     if (convergenceTest == 1) 
@@ -165,18 +163,16 @@ elseif strcmp(solveMode,"linSolve")
     end
     
     a_1 = zeros(p+1,N);
-    A = zeros(M,N);
-    H = zeros(M,N);
+    A_fft = zeros(M,N);
+    H_fft = zeros(M,N);
     
     for nn = 1: N
         a_1(:,nn) = vertcat(1, -a(:,nn));
         
-        [A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
-        %A(:,nn) = A(:,nn)/(mean(A(:,nn)/mean(st_signal(:,nn))));
-        [H(:,nn),w] = freqz(1,a_1(:,nn),"whole",M);
-        %H(:,nn) = H(:,nn)/(mean(H(:,nn))/mean(st_signal(:,nn)));
-        %A(:,nn) = 1/(H(:,nn));
-        
+        %[A(:,nn),~] = freqz(a_1(:,nn),1,"whole",M);
+        %[H(:,nn),w] = freqz(1,a_1(:,nn),"whole",M);
+        A_fft(:,nn) = fft(a_1(:,nn),M);
+        H_fft(:,nn) = 1./A_fft(:,nn);
     end 
     if verbose == 1 
         a_test = lpc(st_signal(:,ceil(N/3)),p);
@@ -194,21 +190,19 @@ elseif strcmp(solveMode,"linSolve")
         
         title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
         
-        A_fft = fft(a_1_check,M);
-        H_fft = 1./A_fft;
-        H_fft = H_fft';
+        [H_freqz,~] = freqz(1,a_1_check,"whole",M);
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
-        figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
-        plot(w,abs(H_fft).^2,"k-*");
+        figure
+        plot(w,abs(H_fft(:,ceil(N/3))).^2,"k-+");
         hold on
-        plot(w,abs(H(:,ceil(N/3))).^2,"b--");
+        plot(w,abs(H_freqz).^2,"b--");
         hold on
         plot(w,abs(H_freqz_lpc).^2,"ro");
         title("Test between LPC and custom made filters ", Interpreter='latex',FontSize=titlesize);
         xlim([0 0.5]);
         grid minor
     end
-    shapingFilters = H;
+    shapingFilters = H_fft;
     
-    whiteningFilters = A;
+    whiteningFilters = A_fft;
 end
