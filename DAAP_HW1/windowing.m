@@ -80,5 +80,6 @@ if (verbose == 1)
     title("Test for cola condition", Interpreter='latex',FontSize=titlesize);
     ylim([0.9,1.1]);
     xlim([-0.3,length(addedWindows)/Fs+0.3]);
+    grid minor
 end
 numOfChunks = chunks_num;

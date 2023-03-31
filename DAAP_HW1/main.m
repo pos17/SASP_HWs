@@ -206,6 +206,7 @@ for i=1:9
     plot(w,10*log10(abs(instr_st_signal_w(1:end/2,index)).^2));
     xlabel("frequency [Hz]",Interpreter="latex");
     ylabel("[dB]",Interpreter="latex");
+    xlim([0 instr_Fs/2]);
     hold on 
     plot(w,10*log10(abs(instr_H(1:end/2,index)).^2),"Linestyle","-", "Linewidth",1.3)
     title(index,Interpreter='Latex');
@@ -213,7 +214,7 @@ for i=1:9
     grid minor
     %legend('boxoff');
 end
-sgtitle('Instrument filter comparison, ' + plotCom, FontSize=titlesize, Interpreter='Latex');
+sgtitle('Instrument filter comparison' + plotCom, FontSize=titlesize, Interpreter='Latex');
 
 % Speech vs filter spectrum comparison 
 
@@ -226,6 +227,7 @@ for i=1:9
     plot(w,10*log10(abs(speech_st_signal_w(1:end/2, index)).^2));
     xlabel("frequency [Hz]",Interpreter="latex");
     ylabel("[dB]",Interpreter="latex");
+    xlim([0 speech_Fs/2]);
     hold on 
     plot(w,10*log10(abs(speech_H(1:end/2,index).^2)),"Linestyle","-", "Linewidth",1.3);
     title(index,Interpreter='Latex');
@@ -234,7 +236,7 @@ for i=1:9
     %legend('boxoff');
 
 end
-sgtitle('Speech filter comparison, ' +plotCom, FontSize=titlesize, Interpreter='Latex');
+sgtitle('Speech filter comparison' +plotCom, FontSize=titlesize, Interpreter='Latex');
 
 % Power spectrograms
 if spec == 1

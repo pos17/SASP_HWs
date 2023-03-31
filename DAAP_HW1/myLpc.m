@@ -119,10 +119,6 @@ if strcmp(solveMode,"steepDesc")
         a_test_Conv = lpc(st_signal(:,chosen_conv),p);
   
         figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
-        %for ii= 1:length(a_Steep_Conv)
-        %    plot(-a_Steep_Conv(1,ii),-a_Steep_Conv(2,ii),'k-o')
-        %    hold on
-        %end
         plot(-a_Steep_Conv(1,:),-a_Steep_Conv(2,:),'k-o')
         hold on
         plot(a_test_Conv(1,comparing_conv_1 +1),a_test_Conv(1,comparing_conv_2 +1),'ro')
@@ -180,11 +176,11 @@ elseif strcmp(solveMode,"linSolve")
         a_check = a(:,ceil(N/3));
         a_1_check = vertcat(1, -a_check);
         
-        %[H_test,w] = freqz(1,a_1_test,"whole",M);
+       
         figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
-        plot(a_test,"k-+");
+        plot(a_test,"k+");
         hold on
-        plot(a_1_check,"r-o");
+        plot(a_1_check,"ro");
         legend('lpc function','custom function',Interpreter='latex');
         grid minor
         
