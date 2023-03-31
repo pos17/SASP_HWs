@@ -1,7 +1,7 @@
-function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,windowLength)
+function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,windowLength,verbose)
 
 %==========================================================================
-%
+
 %                   function for windowing the signal
 %
 %==========================================================================
@@ -42,6 +42,17 @@ for nn = 1:R:signalLength
     s_chunk1 = s_chunk.* w;
     shortTimeSignal(:,ii) = s_chunk1;
     ii =ii+1;
+end
+if (verbose == 1) 
+    shortTimeWindows = zeros(M,chunks_num);    
+    for nn = 1:chunks_num
+        shortTimeWindows(:,ii) = w;
+    end
+    % sum test before adding 
+    addedWindows = adding(shortTimeWindows,R,windowLength);
+    figure
+    plot(1:length(addedWindows),addedWindows);
+    title("TEST TO SEE IF COLA CONDITION IS RESPECTED")
 end
 
 figure

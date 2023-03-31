@@ -53,8 +53,8 @@ taps_music = 80;
 
 wl =  1024; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl,verbose);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl,verbose);
 
 if strcmp(solMode,"steepDesc") 
     [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
@@ -122,22 +122,22 @@ instr_lin = adding(instr_st_res,0.5,wl);
 
 %% testing speech shaping filter 
 
-sine = linspace(1,length(speech_t)/speech_Fs,length(speech_t)).';
-sine_shaped = zeros(length(speech_t),1);
-sine = 0.1 *sin(500*sine);
-sine_shaped_st = zeros(wl,chunksNum_speech);
-sine_shaped_st_w = zeros(wl,chunksNum_speech);
-sine_st_w = zeros(wl,chunksNum_speech);
-sine_st = windowing(sine,"hamming",wl);
-for nn = 1:chunksNum_speech
-    sine_st_w(:,nn) = fft(sine_st(:,nn));
-    sine_shaped_st_w(:,nn) = sine_st_w(:,nn) .* speech_H(:,nn);
-    sine_shaped_st(:,nn) = ifft(sine_shaped_st_w(:,nn));
-end
-
-sine_shaped = adding(sine_shaped_st,0.5,wl);
-sine_shaped = sine_shaped/max(abs(sine_shaped));
-audiowrite("./audioOutputs/"+"whiteShaped.wav",real(sine_shaped),instr_Fs);
+% sine = linspace(1,length(speech_t)/speech_Fs,length(speech_t)).';
+% sine_shaped = zeros(length(speech_t),1);
+% sine = 0.1 *sin(500*sine);
+% sine_shaped_st = zeros(wl,chunksNum_speech);
+% sine_shaped_st_w = zeros(wl,chunksNum_speech);
+% sine_st_w = zeros(wl,chunksNum_speech);
+% sine_st = windowing(sine,"hamming",wl);
+% for nn = 1:chunksNum_speech
+%     sine_st_w(:,nn) = fft(sine_st(:,nn));
+%     sine_shaped_st_w(:,nn) = sine_st_w(:,nn) .* speech_H(:,nn);
+%     sine_shaped_st(:,nn) = ifft(sine_shaped_st_w(:,nn));
+% end
+% 
+% sine_shaped = adding(sine_shaped_st,0.5,wl);
+% sine_shaped = sine_shaped/max(abs(sine_shaped));
+% audiowrite("./audioOutputs/"+"whiteShaped.wav",real(sine_shaped),instr_Fs);
 
 %%
 
