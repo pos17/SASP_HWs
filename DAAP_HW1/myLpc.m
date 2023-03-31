@@ -10,11 +10,12 @@ legendsize = 15;
 %                   zeros array of zeros
 %                   prev previous values of the previous chunk
 if strcmp(solveMode,"steepDesc") 
-   chosen_conv = 500;
+   
    comparing_conv_1 = 3;
    comparing_conv_2 = 4;
     p = taps_number;
     [M,N] = size(st_signal); % M window length, N number of windows
+    chosen_conv = ceil(N/2);
     r = zeros(p+1, N);
     
     for nn = 1:N

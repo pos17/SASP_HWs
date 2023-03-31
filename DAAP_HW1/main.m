@@ -73,8 +73,10 @@ end
 
 
 for nn = 1:chunksNum_instr
-   instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
-   speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
+   %instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+   %speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
+   instr_H(:,nn) = (instr_H(:,nn)/mean(abs(instr_H(:,nn))))*mean(abs(instr_st_signal_w(:,nn)));
+   speech_H(:,nn) = (speech_H(:,nn)/mean(abs(speech_H(:,nn))))*mean(abs(speech_st_signal_w(:,nn)));    
 end
 % M_instr_H = max(abs(instr_H), [], 'all');
 % M_instr_sig_st = max(abs(instr_st_signal_w), [], 'all');
@@ -212,7 +214,7 @@ w1 = linspace(0,speech_Fs/2,wl/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
 speech_st_signal_w_ps = speech_st_signal_w(1:wl/2,:);
 surf(t,w1,(abs(speech_st_signal_w_ps).^2)./(max(abs(speech_st_signal_w_ps).^2)),EdgeColor="none");
-%ylim([0 3000])
+ylim([0 2000])
 view(0,90);
 xlabel("time [s]",Interpreter="latex");
 ylabel("frequency [Hz]",Interpreter="latex");
@@ -223,7 +225,7 @@ w1 = linspace(0,speech_Fs/2,wl/2);
 t =linspace(0,instr_t_len/instr_Fs,chunksNum_speech);
 talking_instr_st_res_w_ps = talking_instr_st_res_w(1:wl/2,:);
 surf(t,w1,abs(talking_instr_st_res_w_ps).^2./(max(abs(talking_instr_st_res_w_ps).^2)),EdgeColor="none");
-%ylim([0 3000])
+ylim([0 2000])
 view(0,90);
 xlabel("time [s]",Interpreter="latex");
 ylabel("frequency [Hz]",Interpreter="latex");
