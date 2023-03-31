@@ -46,10 +46,10 @@ instr_t_len =length(instr_t);
 taps_speech = 44;
 taps_music = 80;
 
-wl =  1024; 
+wl =  2048; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl,verbose);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl,verbose);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl,instr_Fs,verbose);
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl,speech_Fs,verbose);
 
 if strcmp(solMode,"steepDesc") 
     [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,verbose);
@@ -73,12 +73,16 @@ end
 
 
 for nn = 1:chunksNum_instr
-    instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
-    speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));
-    
+   instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+   speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
 end
-
-
+% M_instr_H = max(abs(instr_H), [], 'all');
+% M_instr_sig_st = max(abs(instr_st_signal_w), [], 'all');
+% M_speech_H = max(abs(speech_H), [], 'all');
+% M_speech_sig_st = max(abs(speech_st_signal_w), [], 'all');
+% 
+% instr_H = (instr_H/M_instr_H)*M_instr_sig_st;
+% speech_H = (speech_H/M_speech_H)*M_speech_sig_st;    
 
 
 
@@ -89,8 +93,8 @@ talking_instr_st_res_w = zeros(wl,chunksNum_instr);
 for nn = 1:chunksNum_instr
     %instr_A(:,nn) = instr_A(:,nn)/(mean(instr_A(:,nn)/mean(instr_st_signal_w(:,nn))));
     
-    instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn).* instr_A(:,nn);
-    %instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);
+    %instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn).* instr_A(:,nn);
+    instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);
     
     talking_instr_st_res_w(:,nn) = instr_st_res_w(:,nn) .* speech_H(:,nn);
     %st_res_w(:,nn) = st_signal_w(:,nn)./ H(:,nn);
@@ -107,8 +111,8 @@ end
 
 %st_res_lin = reshape(st_res,[t_buckets *wl 1]);
 
-talking_instr_lin = adding(talking_instr_st_res,0.5,wl);
-instr_lin = adding(instr_st_res,0.5,wl);
+talking_instr_lin = adding(talking_instr_st_res,"hann",wl);
+instr_lin = adding(instr_st_res,"hann",wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = st_res_lin / mean(st_res_lin);

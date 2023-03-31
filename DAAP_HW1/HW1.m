@@ -15,10 +15,10 @@ st_res_sub_name_test = "subtracted_res.wav";
 avviso = audioread("audioInputs/avviso.mp3");
 
 
-% %% FIRST TEST WITH VERBOSE PARAMETERS TO CHECK FUNCTIONING OF THE SCRIPT
-% tic
-% main(instr_name, speech_name, talking_instr_res_name,"linSolve",0.3,10^-1,100000,"zeros",1,1,"threshold 10^{-1}");
-% toc
+%% FIRST TEST WITH VERBOSE PARAMETERS TO CHECK FUNCTIONING OF THE SCRIPT
+tic
+main(instr_name, speech_name, talking_instr_res_name,"linSolve",0.3,10^-1,100000,"zeros",0,1,"threshold 10^(-1)");
+toc
 
 %% test for various threshold values using steepest descent
 close all;clc;

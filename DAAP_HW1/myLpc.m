@@ -84,12 +84,6 @@ if strcmp(solveMode,"steepDesc")
 
             a(:,nn) = a(:,nn) - (0.5 * mu * ( grad_J(:,nn)));
             
-            %a(:,nn) = a(:,nn) + ( mu * ( grad_J(:,nn)));
-            
-            %norm(grad_J(:,nn),1)
-            
-            
-
             ccc=ccc+1;
         end
         if (convergenceTest == 1)
@@ -174,6 +168,18 @@ elseif strcmp(solveMode,"linSolve")
         %A(:,nn) = 1/(H(:,nn));
         
     end 
+    if verbose == 1 
+        a_test = lpc(st_signal(:,ceil(N/2)),p);
+        a_test = a_test';
+        a_check = a(:,ceil(N/2));
+        a_1_check = vertcat(1, -a_check);
+        %[H_test,w] = freqz(1,a_1_test,"whole",M);
+        figure
+        plot(a_test,"ko");
+        hold on
+        plot(a_1_check,"ro");
+        title("Test between LPC and custom made method");
+    end
     shapingFilters = H;
     
     whiteningFilters = A;
