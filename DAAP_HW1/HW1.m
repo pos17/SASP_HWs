@@ -8,12 +8,6 @@ clc; close all; clear all;
 instr_name = "piano.wav";
 speech_name = "speech.wav";
 talking_instr_res_name = "talking_instr_res.wav";
-%instr_res_name = "instr_filter_res.wav";
-%st_res_sub_name = "subtracted_res.wav";
-%st_res_sub_name_test = "subtracted_res.wav";
-
-%avviso = audioread("audioInputs/avviso.mp3");
-
 
 %% FIRST TEST WITH VERBOSE PARAMETERS TO CHECK FUNCTIONING OF THE SCRIPT
 close all;
@@ -41,9 +35,6 @@ talking_instr_res_name = "talking_instr_10_4.wav";
 main(instr_name, speech_name, talking_instr_res_name,"mixed1",0.3,10^-4,100000,"zeros",1,0,0,"threshold $10^{-4}$");
 toc
 
-
-
-%sound(avviso(1:5*44100),44100);
 
 %% test for various coefficients initialization values using steepest descent
 
