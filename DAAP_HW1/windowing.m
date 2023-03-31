@@ -60,9 +60,11 @@ if (verbose == 1)
     end
     % sum test before adding 
     addedWindows = adding(shortTimeWindows,windowType,windowLength);
-    figure
+    
+    figure('Renderer', 'painters', 'Position', [10 10 1000 600]);
+    titlesize = 22;
     plot(linspace(0,length(addedWindows)/Fs,length(addedWindows)),addedWindows,"b-o");
-    title("TEST FOR COLA CONDITION")
+    title("Test for cola condition", Interpreter='latex',FontSize=titlesize);
     ylim([0.9,1.1]);
     xlim([-0.3,length(addedWindows)/Fs+0.3]);
 end
