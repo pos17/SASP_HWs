@@ -12,7 +12,7 @@ legendsize = 15;
 if strcmp(solveMode,"steepDesc") 
    
    comparing_conv_1 = 1;
-   comparing_conv_2 = 4;
+   comparing_conv_2 = 2;
     p = taps_number;
     [M,N] = size(st_signal); % M window length, N number of windows
     chosen_conv = ceil(N/2);
@@ -170,16 +170,30 @@ elseif strcmp(solveMode,"linSolve")
         
     end 
     if verbose == 1 
-        a_test = lpc(st_signal(:,ceil(N/2)),p);
+        a_test = lpc(st_signal(:,ceil(N/3)),p);
         a_test = a_test';
-        a_check = a(:,ceil(N/2));
+        a_check = a(:,ceil(N/3));
         a_1_check = vertcat(1, -a_check);
+        
         %[H_test,w] = freqz(1,a_1_test,"whole",M);
         figure
         plot(a_test,"ko");
         hold on
         plot(a_1_check,"ro");
         title("Test between LPC and custom made method");
+        
+        A_fft = fft(a_1_check,M);
+        H_fft = 1./A_fft;
+        H_fft = H_fft';
+        [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
+        figure
+        plot(w,abs(H_fft).^2,"k-*");
+        hold on
+        plot(w,abs(H(:,ceil(N/3))).^2,"b--");
+        hold on
+        plot(w,abs(H_freqz_lpc).^2,"ro");
+        title("Test between LPC and custom made filters ");
+        xlim([0 0.5]);
     end
     shapingFilters = H;
     

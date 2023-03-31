@@ -12,14 +12,14 @@ talking_instr_res_name = "talking_instr_res.wav";
 %st_res_sub_name = "subtracted_res.wav";
 %st_res_sub_name_test = "subtracted_res.wav";
 
-avviso = audioread("audioInputs/avviso.mp3");
+%avviso = audioread("audioInputs/avviso.mp3");
 
 
 %% FIRST TEST WITH VERBOSE PARAMETERS TO CHECK FUNCTIONING OF THE SCRIPT
-
+close all;
 tic
 talking_instr_res_name = "talking_instr_verb.wav";
-main(instr_name, speech_name, talking_instr_res_name,"linSolve",0.3,10^-1,100000,"zeros",0,1,1,"threshold 10^(-1)");
+main(instr_name, speech_name, talking_instr_res_name,"linSolve",0.3,10^-1,100000,"zeros",0,0,1,"threshold 10^(-1)");
 toc
 
 %% test for various threshold values using steepest descent
@@ -43,7 +43,7 @@ toc
 
 
 
-sound(avviso(1:5*44100),44100);
+%sound(avviso(1:5*44100),44100);
 
 %% test for various coefficients initialization values using steepest descent
 
@@ -76,4 +76,4 @@ talking_instr_res_name = "talking_instr_randn.wav";
 main(instr_name, speech_name, talking_instr_res_name,"mixed1",0.3,0.5*10^-1,100000,"randn",1,0,0,"prev");
 toc
 
-sound(avviso(1:5*44100),44100);
+%sound(avviso(1:5*44100),44100);
