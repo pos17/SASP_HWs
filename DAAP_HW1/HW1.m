@@ -4,12 +4,6 @@
 %==========================================================================
 
 clc; close all; clear all;
-axlabelsize = 15;
-titlesize = 22;
-legendsize = 15;
-
-
-
 
 instr_name = "piano.wav";
 speech_name = "speech.wav";

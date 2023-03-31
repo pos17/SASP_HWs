@@ -1,16 +1,12 @@
-
-
 function [] = main(instrFileName,speechFileName, outputFileName, ...
-    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample,verbose)
+    solMode,tuningMu,minThresh,cycNumMax,initialValues,resample_var,verbose)
 
 %=========================================================================%
 %                           DAAP HW1 main                                 %
 %
 %   solMode = "steepDesc" or "linSolve"                                                                         %  
 %=========================================================================%
-axlabelsize = 15;
-titlesize = 22;
-legendsize = 15;
+
 
 %% xcorr, circshift, cell, window
 
@@ -25,14 +21,13 @@ addpath('audioOutputs')
 [speech_t,speech_Fs] = audioread(speechFileName);
 
 %% Resample
-if(resample == 1)
+if(resample_var == 1)
     fsin    = instr_Fs;
     fsout   = 16000;
     m       = lcm(fsin,fsout);
     up      = m/fsin;
     down    = m/fsout;
     instr_t    = resample(instr_t, up, down);
-    %audiowrite([a_filename,'_22050','.wav'], x_22, fsout);
     instr_Fs=fsout;
     
     fsin    = speech_Fs;
@@ -146,25 +141,27 @@ audiowrite("./audioOutputs/"+outputFileName,real(talking_instr_lin),instr_Fs);
 %audiowrite("./audioOutputs/"+instr_res_name,real(instr_lin),instr_Fs);
 
 
-%% plots
+%% PLOTS
 
-%for nn = 1:chunksNum_instr
-%    instr_H(:,nn) = (instr_H(:,nn) /max(instr_H(:,nn)))*max(instr_st_signal_w(:,nn));
-%end
+% variables initialization
 
+axlabelsize = 15;
+titlesize = 22;
+legendsize = 15;
 w = linspace(0,instr_Fs/2,wl/2);
+
+% Instrument vs filter spectrum comparison 
+ 
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
 
 subplot(3,3,1); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,50).^2)))
-%xlim([0,instr_Fs/2])
 xlabel("frequency [Hz]")
 ylabel("[dB]")
 hold on 
 plot(w,10*log10(abs(instr_H(1:end/2,50)).^2),"Linestyle","-", "Linewidth",1.3)
 title("50")
 legend("signal chunk","filter shape")
-
 
 subplot(3,3,2); 
 plot(w,10*log10(abs(instr_st_signal_w(1:end/2,100)).^2))
