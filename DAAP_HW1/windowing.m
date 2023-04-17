@@ -1,5 +1,5 @@
 function [shortTimeSignal,numOfChunks] = windowing(signal,windowType,...
-    windowLength,Fs,verbose)
+    windowLength,Fs,verbose,plotName)
 
 %==========================================================================
 %
@@ -84,5 +84,7 @@ if (verbose == 1)
     title("Test for cola condition", Interpreter='latex',FontSize=titlesize);
     
     grid minor
+
+    saveas(gcf,strcat("plots/ColaCondTest_",plotName),"png");
 end
 numOfChunks = chunks_num;

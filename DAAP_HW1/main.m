@@ -1,7 +1,7 @@
 function [] = main(instrFileName,speechFileName, outputFileName,...
     wl_speech,wl_instr,taps_speech,taps_music,solMode,tuningMu,...
     minThresh,cycNumMax,initialValues,resample_var,spec,verbose,plotCom,...
-    normalize)
+    normalize,plotName)
     warning('off');
 %=========================================================================%
 %                           DAAP HW1 main                                 %
@@ -50,50 +50,59 @@ instr_t_len =length(instr_t);
 
 %wl_speech =  2048; 
 
-[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl_instr,instr_Fs,verbose);
-[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl_speech,speech_Fs,verbose);
+[instr_st_signal,chunksNum_instr] = windowing(instr_t,"hann",wl_instr,instr_Fs,verbose,strcat("instr_",plotName));
+[speech_st_signal,chunksNum_speech] = windowing(speech_t,"hann",wl_speech,speech_Fs,verbose,strcat("speech_",plotName));
 
 if strcmp(solMode,"steepDesc") 
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"steepDesc",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose,plotName);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose,plotName);
 elseif strcmp(solMode,"linSolve") 
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose,plotName);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,speech_Fs,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,speech_Fs,verbose,plotName);
 elseif strcmp(solMode,"mixed1") 
     if(verbose == 1)
        disp("Precision check plots for piano signal")
     end
-    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose);
+    [instr_H,instr_A] =  myLpc(instr_st_signal,taps_music,"linSolve",tuningMu,minThresh,cycNumMax,0,initialValues,instr_Fs,verbose,plotName);
     if(verbose == 1)
        disp("Precision check plots for speech signal")
     end
-    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose);
+    [speech_H,speech_A] =  myLpc(speech_st_signal,taps_speech,"steepDesc",tuningMu,minThresh,cycNumMax,1,initialValues,speech_Fs,verbose,plotName);
 end
 
 instr_st_signal_w = zeros(wl_instr,chunksNum_instr);
 instr_st_res = zeros(wl_instr,chunksNum_instr);
 instr_st_res_w = zeros(wl_instr,chunksNum_instr);
 speech_st_signal_w = zeros(wl_speech,chunksNum_speech);
-
+normValuesInstr = ones(1,chunksNum_instr);
 for nn = 1:chunksNum_instr
     instr_st_signal_w(:,nn) = fft(instr_st_signal(:,nn));
 
     if(normalize == "mean")
-        instr_H(:,nn) = (instr_H(:,nn)/mean(abs(instr_H(:,nn))))*mean(abs(instr_st_signal_w(:,nn)));
+        normValue = mean(abs(instr_H(:,nn)))/mean(abs(instr_st_signal_w(:,nn)));
+        %instr_H(:,nn) = (instr_H(:,nn)/mean(abs(instr_H(:,nn))))*mean(abs(instr_st_signal_w(:,nn)));
+        %normValuesInstr(1,nn) = mean(abs(instr_H(:,nn)))/mean(abs(instr_st_signal_w(:,nn)));
+        instr_H(:,nn) = instr_H(:,nn)/normValue;
+        normValuesInstr(1,nn) = normValue;
     elseif(normalize == "max")
-        instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+        %instr_H(:,nn) = (instr_H(:,nn)/max(abs(instr_H(:,nn))))*max(abs(instr_st_signal_w(:,nn)));
+        %normValuesInstr(1,nn) = max(abs(instr_H(:,nn)))/max(abs(instr_st_signal_w(:,nn)));
+        normValue = max(abs(instr_H(:,nn)))/max(abs(instr_st_signal_w(:,nn)));
+        instr_H(:,nn) = instr_H(:,nn)/normValue;
+        normValuesInstr(1,nn) = normValue;
+    
     elseif(normalize == "none")
     end
 
@@ -104,19 +113,28 @@ end
 
 instr_lin = adding(instr_st_res,"hann",wl_instr);
 instr_lin = instr_lin(1:length(speech_t));
-[instr_st_signal_speech,chunksNum_instr_speech] = windowing(instr_lin,"hann",wl_speech,instr_Fs,verbose);
+[instr_st_signal_speech,chunksNum_instr_speech] = windowing(instr_lin,"hann",wl_speech,instr_Fs,verbose,strcat("instr_",plotName));
 
 %instr_st_res =  zeros(wl_instr, chunksNum_instr); 
 %instr_st_res_w = zeros(wl_instr,chunksNum_instr);
 talking_instr_st_res =  zeros(wl_speech, chunksNum_instr); 
 talking_instr_st_res_w = zeros(wl_speech,chunksNum_instr);
+normValuesSpeech = ones(1,chunksNum_instr_speech);
 for nn = 1:chunksNum_instr_speech
    speech_st_signal_w(:,nn) = fft(speech_st_signal(:,nn));
    instr_st_signal_speech_w(:,nn) = fft(instr_st_signal_speech(:,nn));
    if(normalize == "mean")
-        speech_H(:,nn) = (speech_H(:,nn)/mean(abs(speech_H(:,nn))))*mean(abs(speech_st_signal_w(:,nn)));    
+        normValue = mean(abs(speech_H(:,nn)))/mean(abs(speech_st_signal_w(:,nn)));
+        %speech_H(:,nn) = (speech_H(:,nn)/mean(abs(speech_H(:,nn))))*mean(abs(speech_st_signal_w(:,nn)));
+        speech_H(:,nn) = speech_H(:,nn)/normValue;
+        normValuesSpeech(1,nn) = normValue;
    elseif(normalize == "max")
-        speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));    
+        %speech_H(:,nn) = (speech_H(:,nn)/max(abs(speech_H(:,nn))))*max(abs(speech_st_signal_w(:,nn)));   
+        normValue = max(abs(speech_H(:,nn)))/max(abs(speech_st_signal_w(:,nn)));
+        speech_H(:,nn) = speech_H(:,nn)/normValue;
+        normValuesSpeech(1,nn) = normValue;
+   
+        %normValuesSpeech(1,nn) = max(abs(speech_H(:,nn)))/max(abs(speech_st_signal_w(:,nn)));
    elseif(normalize == "none")
    end
    talking_instr_st_res_w(:,nn) = instr_st_signal_speech_w(:,nn) .* speech_H(:,nn);
@@ -153,7 +171,7 @@ end
 
 %st_res_lin = reshape(st_res,[t_buckets *wl 1]);
 
-talking_instr_lin = adding(talking_instr_st_res,"hann",wl_speech);
+talking_instr_lin = adding(talking_instr_s t_res,"hann",wl_speech);
 
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
@@ -199,7 +217,7 @@ legendsize = 15;
 
 w = linspace(0,instr_Fs/2,wl_instr/2);
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
-
+disp("Instr");
 for i=1:9
     subplot(3,3,i); 
     index=i*floor(chunksNum_instr/9);
@@ -213,14 +231,16 @@ for i=1:9
     legend("signal chunk","filter shape",Interpreter='Latex');
     grid minor
     %legend('boxoff');
+    disp(strcat("plot: ", num2str(index)));
+    disp(strcat("normalization value: ", num2str(normValuesInstr(1,index))));
 end
 sgtitle('Instrument filter comparison' + plotCom, FontSize=titlesize, Interpreter='Latex');
-
+saveas(gcf,strcat("plots/InstrFilterComp_",plotName),"png");
 % Speech vs filter spectrum comparison 
 
 w = linspace(0,speech_Fs/2,wl_speech/2);
 figure('Renderer', 'painters', 'Position', [10 10 1000 600])
-
+disp("Speech");
 for i=1:9
     subplot(3,3,i); 
     index=i*floor(chunksNum_speech/9);
@@ -234,9 +254,11 @@ for i=1:9
     legend("signal chunk","filter shape",Interpreter='Latex');
     grid minor
     %legend('boxoff');
-
+    disp(strcat("plot: ", num2str(index)));
+    disp(strcat("normalization value: ", num2str(normValuesSpeech(1,index))));
 end
 sgtitle('Speech filter comparison' +plotCom, FontSize=titlesize, Interpreter='Latex');
+saveas(gcf,strcat("plots/SpeechFilterComp_",plotName),"png");
 
 % Power spectrograms
 if spec == 1

@@ -1,10 +1,10 @@
 function [shapingFilters,whiteningFilters] =  myLpc(st_signal,taps_number,...
- solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,Fs,verbose)
+ solveMode,tuningMu,minThresh,cycNumMax,convergenceTest,initialValues,Fs,verbose,plotName)
 
 axlabelsize = 15;
 titlesize = 22;
 legendsize = 15;
-
+cyclesStopped = 0; 
 
 
 % initialValues:    ones array of ones
@@ -88,10 +88,16 @@ if strcmp(solveMode,"steepDesc")
             
             ccc=ccc+1;
         end
+        if ccc >= cycNumMax
+            cyclesStopped = cyclesStopped +1;
+        end
+                
         if (convergenceTest == 1)
             if (nn == chosen_conv)
                 a_Steep_Conv = a_Steep_Conv(:,1:ccc-1);
+                
             end
+            
         end
         if(strcmp(initialValues,"prev"))
             if(nn<N)
@@ -128,9 +134,10 @@ if strcmp(solveMode,"steepDesc")
         grid minor
         
         title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
-        
+        saveas(gcf,strcat("plots/ConvTest_",plotName),"png");
     end
-
+    
+    disp(strcat("cycles stopped for maximum iterations reached: ",num2str(cyclesStopped)));
     
     shapingFilters = H_fft;
     
@@ -187,7 +194,8 @@ elseif strcmp(solveMode,"linSolve")
         grid minor
         
         title("Test between power spectrum of LPC and custom made method",Interpreter='latex',FontSize=titlesize);
-        
+        saveas(gcf,strcat("plots/FilterCoeffsTest_",plotName),"png");
+
         [H_freqz,~] = freqz(1,a_1_check,"whole",M);
         [H_freqz_lpc,w] = freqz(1,a_test,"whole",M);
 
@@ -205,6 +213,7 @@ elseif strcmp(solveMode,"linSolve")
         title("Test between power spectrum of LPC, freqz, custom made filters", Interpreter='latex',FontSize=titlesize);
         xlim([0 Fs/2]);
         grid minor
+        saveas(gcf,strcat("plots/FilterFreqRespTest_",plotName),"png");
     end
     shapingFilters = H_fft;
     
