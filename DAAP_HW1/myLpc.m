@@ -133,8 +133,9 @@ if strcmp(solveMode,"steepDesc")
         legend('iterations','target point',Interpreter='latex');
         grid minor
         
-        title("Test between LPC and custom made method",Interpreter='latex',FontSize=titlesize);
-        saveas(gcf,strcat("plots/ConvTest_",plotName),"png");
+        title("Test between LPC and custom made method, index= " +chosen_conv ,Interpreter='latex',FontSize=titlesize);
+        plotName = 'Test between LPC and custom made method ' ;
+        saveas(gcf,strcat("plots/",plotName),"png");
     end
     
     disp(strcat("cycles stopped for maximum iterations reached: ",num2str(cyclesStopped)));
