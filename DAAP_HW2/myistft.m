@@ -4,13 +4,13 @@ function [y] = myistft(x,windowLength,overlap)
     if(windowLength ~= size(x,1) )
         disp("something wrong!!!!!!!");
     end
-    Nframes = size(x,2);
+    Nframes = size(x,2)
     y_t_length = (Nframes*R)+(windowLength-R);
-    y_t = zeros(1,y_t_length);
+    y_t = zeros(y_t_length,1);
     
 
-    for m = 0 : Nframes
-        temp = ifft(x(:,m));  
+    for m = 0 : Nframes-1
+        temp = ifft(x(:,m+1));  
         y_t(m*R+1 : m*R+M)=y_t(m*R+1 : m*R+M) + temp;
     end
     y=y_t;
