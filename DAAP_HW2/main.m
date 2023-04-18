@@ -49,3 +49,8 @@ y_1_t_sub = y_1_t_sub / max(y_1_t_sub);
 audiowrite("./audioOutputs/"+"myfftTestSUB.wav",real(y_1_t_sub)/max(real(y_1_t_sub)),y_1_Fs);
 
 
+
+%test stft 
+
+
+
