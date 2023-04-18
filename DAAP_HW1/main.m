@@ -172,7 +172,7 @@ end
 
 %st_res_lin = reshape(st_res,[t_buckets *wl 1]);
 
-talking_instr_lin = adding(talking_instr_s t_res,"hann",wl_speech);
+talking_instr_lin = adding(talking_instr_st_res,"hann",wl_speech);
 
 %st_res_lin = adding(instr_st_res,0.5,wl);
 %st_res_lin = adding(instr_st_res,0.5,wl);
