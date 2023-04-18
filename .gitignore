@@ -270,5 +270,8 @@ DAAP_HW1/audioOutputs/
 
 #MATALB
 *.mat
+#ZIP
+*.zip
+
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,matlab,windows,python
