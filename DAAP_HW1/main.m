@@ -109,6 +109,7 @@ for nn = 1:chunksNum_instr
     instr_st_res_w(:,nn) =  instr_st_signal_w(:,nn)./ instr_H(:,nn);   
     instr_st_res(:,nn) = ifft(instr_st_res_w(:,nn));
    
+    
 end
 
 instr_lin = adding(instr_st_res,"hann",wl_instr);
@@ -213,6 +214,25 @@ axlabelsize = 15;
 titlesize = 22;
 legendsize = 15;
 
+% Steepest descend comparison
+
+w = linspace(0,speech_Fs/2,wl_speech/2);
+figure('Renderer', 'painters', 'Position', [10 10 1000 600])
+
+index=ceil(chunksNum_speech/2);
+plot(w,10*log10(abs(speech_st_signal_w(1:end/2, index)).^2));
+xlabel("frequency [Hz]",Interpreter="latex");
+ylabel("[dB]",Interpreter="latex");
+xlim([0 speech_Fs/2]);
+hold on 
+plot(w,10*log10(abs(speech_H(1:end/2,index).^2)),"Linestyle","-", "Linewidth",1.3);
+legend("signal chunk","filter shape",Interpreter='Latex');
+grid minor
+%legend('boxoff');
+
+sgtitle('Speech filter comparison' +plotCom +index, FontSize=titlesize, Interpreter='Latex');
+plotName = 'Speech filter comparison' +plotCom +index;
+saveas(gcf,strcat("plots/",plotName),"png");
 % Instrument vs filter spectrum comparison 
 
 w = linspace(0,instr_Fs/2,wl_instr/2);
