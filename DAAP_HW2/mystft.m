@@ -1,12 +1,12 @@
-function [Y_st] = mystft(x,windowType,windowLength,overlap)
-    N =windowLength;
-    R = overlap;
+function [Y_st] = mystft(x,windowType,windowLength,overlap,zeropadding)
+    P=zeropadding;
+    M =windowLength;
     x = x(:);
     R=overlap;
-    Nframes = floor((length(x)-N)/R) + 1;
+    Nframes = floor((length(x)-M)/R) + 1;
     %X = zeros(N/2+1,Nframes);
-    Y_st = zeros(N,Nframes);
-    x(length(x)+1:(Nframes*R)+(2*N-R))=0;
+    Y_st = zeros(M+P,Nframes);
+    x(length(x)+1:(Nframes*R)+(2*M-R))=0;
     %windowing
     if(strcmp(windowType,"rectwin"))
         w = rectwin(windowLength);
@@ -23,11 +23,12 @@ function [Y_st] = mystft(x,windowType,windowLength,overlap)
 
     w = w(:);
 
-    for m = 0 : Nframes
-        xm = x(m*R+1 : m*R+N);         % Extract a block of the signal
-        ym = w .* xm;                   % Window the signal block
-        temp = fft(ym);              % Compute the DFT of the windowed block
-        Y_st(:, m+1) = temp;  %temp(1 : N/2+1) ;   % Store the value of the DFT in the output matrix  
+    for n = 0 : Nframes
+        xn = x(n*R+1 : n*R+M);         % Extract a block of the signal
+        yn = w .* xn;
+        yn(end+1:end+P) = 0; % Window the signal block
+        temp = fft(yn);              % Compute the DFT of the windowed block
+        Y_st(:, n+1) = temp;  %temp(1 : N/2+1) ;   % Store the value of the DFT in the output matrix  
     end
 
 

@@ -54,7 +54,7 @@ audiowrite("./audioOutputs/"+"myfftTestSUB.wav",real(y_1_t_sub)/max(real(y_1_t_s
 %test stft 
 M = 1024;
 R = M/2;
-Y_1_st = mystft(y_1_t,"hann",M,R);
+Y_1_st = mystft(y_1_t,"hann",M,R,M);
 winsNum = size(Y_1_st,2);
 
 figure 
@@ -70,7 +70,7 @@ title('spectrogram',Interpreter='Latex');
 
 %test istft
 
-y_1_st_1_res = myistft(Y_1_st,M,R);
+y_1_st_1_res = myistft(Y_1_st,2*M,R);
 
 audiowrite("./audioOutputs/"+"mystftTest.wav",real(y_1_st_1_res)/max(real(y_1_st_1_res)),y_1_Fs);
 
