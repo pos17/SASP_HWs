@@ -23,7 +23,7 @@ function [Y_st] = mystft(x,windowType,windowLength,overlap,zeropadding)
 
     w = w(:);
 
-    for n = 0 : Nframes
+    for n = 0 : Nframes-1
         xn = x(n*R+1 : n*R+M);         % Extract a block of the signal
         yn = w .* xn;
         yn(end+1:end+P) = 0; % Window the signal block
