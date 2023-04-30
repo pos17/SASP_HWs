@@ -26,7 +26,9 @@ function [Y_st] = mystft(x,windowType,windowLength,overlap,zeropadding)
     for n = 0 : Nframes-1
         xn = x(n*R+1 : n*R+M);         % Extract a block of the signal
         yn = w .* xn;
-        yn(end+1:end+P) = 0; % Window the signal block
+        if(P~=0)
+            yn(end+1:end+P) = 0; % Window the signal block
+        end
         temp = fft(yn);              % Compute the DFT of the windowed block
         Y_st(:, n+1) = temp;  %temp(1 : N/2+1) ;   % Store the value of the DFT in the output matrix  
     end
