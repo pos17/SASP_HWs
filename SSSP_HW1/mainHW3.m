@@ -31,7 +31,7 @@ switch lower(mod_speed)
 end
 
 %% Apply FX
-y  = leslie(x, Fs, freq);
+[y,y_lpf,y_hpf,y_hp_sdf]= leslie(x, Fs, freq);
 
 %% Avoid any (possible) clipping
 y = rescale(y,-1.,1.);
