@@ -1,4 +1,4 @@
-function [y,y_lpf,y_hpf,y_hp_sdf] = leslie_o(x, Fs, freq)
+function [y,y_lpf,y_hpf,y_hp_sdf] = leslie(x, Fs, freq)
 %Leslie Speaker Emulation
 %
 % J. Pekonen et al. Computationally Efficient Hammond Organ Synthesis
@@ -149,10 +149,7 @@ for n=1:N
     y_hp_am= (1+alpha*m_t)*y_hp_sdf(n);
 
     y(n,1)= y_lp_am + y_hp_am;
-    if(n==500)
-    disp("ciao")
-    end
-
+    
 end
 end
 

@@ -10,7 +10,7 @@
 clear; close all; clc;
 
 %% modulation speed
-mod_speed = 'tremolo';
+mod_speed = 'chorale';
 
 %% Read the input file
 [x, Fs] = audioread('HammondRef.wav');
