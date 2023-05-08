@@ -10,7 +10,7 @@
 clear; close all; clc;
 
 %% modulation speed
-mod_speed = 'chorale';
+mod_speed = 'tremolo';
 
 %% Read the input file
 [x, Fs] = audioread('HammondRef.wav');
@@ -33,6 +33,8 @@ end
 %% Apply FX
 [y,y_lpf,y_hpf,y_hp_sdf]= leslie(x, Fs, freq);
 
+figure 
+plot(y)
 %% Avoid any (possible) clipping
 y = rescale(y,-1.,1.);
 
@@ -46,6 +48,6 @@ addpath(dir_name);
 [y_ref, ~] = audioread(fullfile(dir_name, strcat(mod_speed,'.wav')));
 
 %% Display the MSE
-MSE = mean(abs(y.'-y_ref).^2);
+MSE = mean(abs(y-y_ref).^2);
 MSE_str = sprintf('MSE: %g', MSE);
 disp(MSE_str)
