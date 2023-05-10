@@ -19,12 +19,13 @@ G = 20; % logarithmic gain [dB]
 V0 = 10^(G/20);
 H0 = V0-1;
 
-a1 = (tan(Wc/2)-1) / (tan(Wc/2)+1);
+a1 = -0.95;
 
-num = [a1, 1];
-den = [1, a1];
+num = [a1^4,4*a1^3,6*a1^2,4*a1,1];
+den = [1,4*a1, 6*a1^2,4*a1^3,a1^4];
 zplane(num,den);
 H = freqz(num, den, f(1:Nfft/2+1), fs);
+saveas(gcf,'Plots/zplane',"png");
 
 figure,
 subplot(2,1,1)
