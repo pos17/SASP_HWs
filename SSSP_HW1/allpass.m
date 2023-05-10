@@ -11,7 +11,7 @@ Nfft = 4096; % number of FFT bins
 f = 0:fs/Nfft:fs-fs/Nfft;
 
 %% Low frequency shelving
-fc = 20000; % cutoff frequency [Hz]
+fc = 2000; % cutoff frequency [Hz]
 Wc = 2*pi*fc/fs; % normalized cutoff frequency
 
 % Boost
@@ -23,7 +23,7 @@ a1 = (tan(Wc/2)-1) / (tan(Wc/2)+1);
 
 num = [a1, 1];
 den = [1, a1];
-zplane(den, num);
+zplane(num,den);
 H = freqz(num, den, f(1:Nfft/2+1), fs);
 
 figure,
