@@ -70,14 +70,22 @@ sdf_b.in=zeros(N_sdf_b+1,1);
  m_b = 0;%$Ms_b*sin(freq*n)+Mb_b % bass modulator
  m_t = 0;%Ms_t*sin((freq+0.1)*n)+Mb_t % tremble modulator
 
-
-% for n=1:2000
+% 
+% for n=1:500
+%     m_b(1,n) = Ms_b*sin(freq*n)+Mb_b;
 %     m_t(1,n) = Ms_t*sin((freq+0.1)*n)+Mb_t;
-% end 
+% end
+%     m_t_max = max(abs(m_t))
+%     m_b_max = max(abs(m_b))
+%     m_t_min = min(abs(m_t))
+%     m_b_min = min(abs(m_b))
 % figure()
-% n=1:1:2000;
+% n=1:1:500;
 % plot(n,m_t);
-% grid on
+% hold on
+% plot(n,m_b);
+% legend('treble','bass')
+% 
 
 %sample processing
 
