@@ -69,7 +69,7 @@ n_9 = 0:N;
 h_int_9 = LagrangeInterpolation(N,D);
 [H_int_9, f_9] = freqz(h_int_9, 1, 'half', fs);
 
-
+zplane(h_int_5,1)
 
 %% Lagrange interpolation plots
 
