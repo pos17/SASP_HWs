@@ -168,20 +168,21 @@ subtitle('Frequency response',Interpreter="latex",FontSize=fontSize);
 % plot(f_2*fs/pi/2, abs(H_int_2));
 % hold on
 %norm_freq = (0,1,f_4*fs/pi/2);
-plot(f_4/(pi), abs(H_int_4),LineWidth=lw);
+plot(f_4/(pi), db(abs(H_int_4)),LineWidth=lw);
 hold on
-plot(f_5/(pi), abs(H_int_5),LineWidth=lw);
+plot(f_5/(pi), db(abs(H_int_5)),LineWidth=lw);
 hold on
-plot(f_opt/(pi), abs(H_int_opt),LineWidth=lw);
+plot(f_opt/(pi), db(abs(H_int_opt)),LineWidth=lw);
 hold on
-plot(f_7/(pi), abs(H_int_7),LineWidth=lw);
+plot(f_7/(pi), db(abs(H_int_7)),LineWidth=lw);
 hold on
-plot(f_8/(pi), abs(H_int_8),LineWidth=lw);
+plot(f_8/(pi), db(abs(H_int_8)),LineWidth=lw);
 hold on
-plot(f_9/(pi), abs(H_int_9),LineWidth=lw);
-ylim([0 1.7]);
+plot(f_9/(pi), db(abs(H_int_9)),LineWidth=lw);
+ylim([-10 5]);
 %xlim([0 fs/2]);
-xlabel('Frequency [Hz]',Interpreter="latex",FontSize=fontSize), ylabel('Magnitude [dB]',Interpreter="latex",FontSize=fontSize);
+xlabel('Normalized Frequency $(\times \pi [rad/sample])$',Interpreter="latex",FontSize=fontSize),
+ylabel('Magnitude [dB]',Interpreter="latex",FontSize=fontSize);
 %legend(["N=1","N=2","N=3","N= floor(2*D)","N=7","N= floor(4*D)","N= floor(5*D)"],'Location','northwest',Interpreter="latex");
 legend(["N=4","N=5","N=6","N=7","N=8","N=9"],'Location','northwest',Interpreter="latex",FontSize=fontSize);
 hold on
@@ -218,7 +219,7 @@ hold on
 plot(w/pi,gd,LineWidth=lw)
 
 ylim([1 4]);
-xlabel('Normalized Frequency $(x \pi [rad/sample])$',Interpreter="latex",FontSize=fontSize), ylabel('Group Delay [samples]',Interpreter="latex",FontSize=fontSize);
+xlabel('Normalized Frequency $(\times \pi [rad/sample])$',Interpreter="latex",FontSize=fontSize), ylabel('Group Delay [samples]',Interpreter="latex",FontSize=fontSize);
 %xlim([0 fs/2]);
 %legend(["N=1","N=2","N=3","N= floor(2*D)","N=7","N= floor(4*D)","N= floor(5*D)"],'Location','northwest',Interpreter="latex");
 legend(["N=4","N=5","N=6","N=7","N=8","N=9"],'Location','northwest',Interpreter="latex",FontSize=fontSize);
@@ -247,7 +248,7 @@ plot(w/pi,pd,LineWidth=lw)
 hold on 
 [pd,w]=phasedelay(h_int_9, 1, 1024);
 plot(w/pi,pd,LineWidth=lw)
-xlabel('Normalized Frequency $(x \pi [rad/sample])$',Interpreter="latex",FontSize=fontSize), ylabel('Phase Delay [samples]',Interpreter="latex",FontSize=fontSize);
+xlabel('Normalized Frequency $(\times  \pi [rad/sample])$',Interpreter="latex",FontSize=fontSize), ylabel('Phase Delay [samples]',Interpreter="latex",FontSize=fontSize);
 grid
 %xlim([0 1024]);
 %legend(["N=1","N=2","N=3","N= floor(2*D)","N=7","N= floor(4*D)","N= floor(5*D)"],'Location','northwest',Interpreter="latex");

@@ -38,9 +38,7 @@ N_bw = 4;
 [b_lp, a_lp] = butter(N_bw,fc/(Fs/2)); %LPF design
 [b_hp, a_hp] = butter(N_bw,fc/(Fs/2),'high'); %HPF design
 
-Hd_hp = dfilt.df1(b_hp,a_hp)
 
-Hd_lp = dfilt.df1(b_lp,a_lp)
 a_lp1 = a_lp(2:end)';
 a_hp1 = a_hp(2:end)';
 b_lp1 = b_lp';
@@ -50,17 +48,21 @@ b_hp1 = b_hp';
 % crossover plot
 figure()
 freqz(b_lp,a_lp,[],Fs)
-subplot(2,1,1)
+%subplot(2,1,1)
 ylim([-100 20])
 xlim([0 2000])
 legend("lpf")
 grid on 
+sgtitle("Low pass filter",Interpreter="Latex")
+
+
 figure()
 freqz(b_hp,a_hp,[],Fs)
 ylim([-100 20])
 xlim([0 2000])
 grid on 
 legend("hpf")
+sgtitle("High pass filter",Interpreter="Latex")
 
 % allocate input and output buffers for IIR filters
 % hp filter buffers

@@ -22,14 +22,11 @@ for n=1:(LEN-1)
     frac=TAP-i;
     Delayline=[x(n);Delayline(1:L-1)];
     %---Linear Interpolation----------------------------- 
-    %y(n,1)=Delayline(i+1)*frac+Delayline(i)*(1-frac);
+    % y(n,1)=Delayline(i+1)*frac+Delayline(i)*(1-frac);
     %---Allpass Interpolation------------------------------ 
-     y(n,1)=(Delayline(i+1)+(1-frac)*Delayline(i)-(1-frac)*ya_alt); 
-     ya_alt=y(n,1);
+     %y(n,1)=(Delayline(i+1)+(1-frac)*Delayline(i)-(1-frac)*ya_alt); 
+     %ya_alt=y(n,1);
     %---Spline Interpolation------------------------------- 
-    %y(n,1)=Delayline(i+1)*frac^3/6 
-    %....+Delayline(i)*((1+frac)^3-4*frac^3)/6 
-    %....+Delayline(i-1)*((2-frac)^3-4*(1-frac)^3)/6 
-    %....+Delayline(i-2)*(1-frac)^3/6;
+    y(n,1)=Delayline(i+1)*frac^3/6 +Delayline(i)*((1+frac)^3-4*frac^3)/6  +Delayline(i-1)*((2-frac)^3-4*(1-frac)^3)/6    +Delayline(i-2)*(1-frac)^3/6;
     %3rd-order Spline Interpolation
 end

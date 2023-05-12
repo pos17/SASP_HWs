@@ -12,7 +12,7 @@
 clear; close all; clc;
 
 %% modulation speed
-mod_speed = 'chorale';
+mod_speed = 'tremolo';
 
 %% Read the input file
 [x, Fs] = audioread('HammondRef.wav');
@@ -35,8 +35,8 @@ end
 %% Apply FX
 [y,y_lpf,y_hpf,y_hp_sdf]= leslie(x, Fs, freq);
 
-figure 
-plot(y)
+%figure 
+%plot(y)
 %% Avoid any (possible) clipping
 y = rescale(y,-1.,1.);
 
