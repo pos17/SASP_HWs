@@ -68,13 +68,78 @@ Z24 = 2*L3/Ts;
 Z31 = 2*L4/Ts;
 
 
+% Series and Parallels nodes 
+% HIGH SECTION 
 
-%% Computation of Scattering Matrices
+Z11 = (Z10*Z12) /(Z10+Z12);
+Z7 = Z11;
+Z8 = Z7 +Z9;
 
 
+% MID SECTION
+
+Z29 = Z28 +Z30;
+Z27 = Z29;
+Z25 = (Z26*Z27) /(Z26+Z27);
+Z23 = Z25;
+Z22 = (Z23*Z24) /(Z23+Z24);
+Z20 = Z22;
+Z19 = Z20 + Z21;
+Z17 = Z19;
+Z16 = (Z17*Z18) /(Z17+Z18);
+Z15 = Z16;
+Z14 = Z13 + Z15;
+
+
+% LOW SECTION
+
+Z40 = Z41 + Z42;
+Z38 = Z40;
+Z37 = (Z38*Z39) /(Z38+Z39);
+Z35 = Z37;
+Z34 = (Z35*Z36) /(Z35+Z36);
+Z33 = Z34;
+Z32 = Z31 + Z33;
+
+% Main circuit parallels
+
+Z1=Z8;
+Z4 = Z32;
+Z6 = Z14;
+
+Z5 = (Z4*Z6) /(Z4+Z6);
+Z2 = Z5;
+Z3 = (Z1*Z2) /(Z1+Z2);
+
+%% Computation of Scattering Matrices 
+
+Sp1 = ParallelAdaptor(Z1,Z2,Z3);
+Sp3 = ParallelAdaptor(Z4,Z5,Z6);
+
+% HIGH
+
+Ss1 = SeriesAdaptor(Z7,Z8,Z9);
+Sp3 = ParallelAdaptor(Z10,Z11,Z12);
+
+% MID
+
+Ss2 = SeriesAdaptor(Z13,Z14,Z15);
+Sp4 = ParallelAdaptor(Z16,Z17,Z18);
+Ss3 = SeriesAdaptor(Z19,Z20,Z21);
+Sp5 = ParallelAdaptor(Z22,Z23,Z24);
+Sp6 = ParallelAdaptor(Z25,Z26,Z27);
+Ss4 = SeriesAdaptor(Z28,Z29,Z30);
+
+% LOW 
+
+Ss5 = SeriesAdaptor(Z31,Z32,Z33);
+Sp7 = ParallelAdaptor(Z34,Z35,Z36);
+Sp8 = ParallelAdaptor(Z37,Z38,Z39);
+Ss6 = SeriesAdaptor(Z40,Z41,Z42);
 
 %% Initialization of Waves
-
+a = zeros(42,Nsamp);
+b = zeros(42,Nsamp);
 
 %% Initialize Output Signals
 % Low
@@ -89,19 +154,73 @@ while (ii<Nsamp)
     ii=ii+1;
 
     %% Manage Dynamic Elements
-            
     
-    %% Forward Scan
+    % HIGH 
+    a(9,ii) = b(9,ii-1)
+    a(12,ii) = -b(12,ii-1)
+    
+    % MID 
+    a(13,ii) = -b(13,ii-1)
+    a(18,ii) = b(18,ii-1)
+    a(21,ii) = b(21,ii-1)
+    a(24,ii) = -b(24,ii-1)
+    a(30,ii) = b(30,ii-1)
+    
+    %LOW
+    a(31,ii) = -b(31,ii-1)
+    a(36,ii) = b(36,ii-1)
+    a(41,ii) = b(41,ii-1)
+    
 
+    %% Forward Scan
+    
+    % HIGH 
+    b(11,ii) = Sp3(2,:)*a(10:12,ii);
+    a(7,ii) = b(11,ii);
+    b(8,ii) = Ss1(2,:)*a(7:9,ii);
+    
+    % MID
+    
+    b(29,ii) = Ss4(2,:)*a(28:30,ii);
+    a(26,ii) = b(29,ii);
+    b(25,ii) = Sp6(1,:)*a(25:27,ii);
+    a(23,ii) = b(25,ii);
+    b(22,ii) = Sp5(1,:)*a(22:24,ii);
+    a(20,ii) = b(22,ii);
+    b(19,ii) = Ss3(1,:)*a(19:21,ii);
+    a(17,ii) = b(19,ii);
+    b(16,ii) = Sp4(1,:)*a(16:18,ii);
+    a(15,ii) = b(16,ii);
+    b(14,ii) = Ss2(2,:)*a(13:15,ii);
+    
+    %LOW 
+
+    b(40,ii) = Ss6(1,:)*a(40:42,ii);
+    a(38,ii) = b(40,ii);
+    b(37,ii) = Sp8(1,:)*a(37:39,ii);
+    a(35,ii) = b(37,ii);
+    b(34,ii) = Sp7(1,:)*a(34:36,ii);
+    a(33,ii) = b(34,ii);
+    b(32,ii) = Ss5(2,:)*a(31:33,ii);
+    
+    % Main circuit parallels
+    a(1,ii) = b(8,ii);
+    a(4,ii) = b(32,ii);
+    a(6,ii) = b(14,ii);
+    a(2,ii) = b(5,ii);
+    b(5,ii) = Sp2(2,:)*a(4:6,ii);
+    b(3,ii) = Sp1(3,:)*a(1:3,ii);
+    
 
     %% Local Root Scattering
-
+    
+    a(3,ii) = 2* Vin(ii,1) - b(3,ii); 
 
     %% Backward Scan
-
+    
 
     %% Read Output
-  
+    
     
 end
 

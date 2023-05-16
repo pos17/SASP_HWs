@@ -1,0 +1,10 @@
+function portMatrix =  ParallelAdaptor(Z1,Z2,Z3)
+    G1 = Z1^(-1);
+    G2 = Z2^(-1);
+    G3 = Z3^(-1);
+    portMatrix = zeros(3);
+    totG = sum([G1 G2 G3]);
+    onesRow = ones(1,3);
+    onesDiag = diag(onesRow);
+    colG = [G1;G2;G3];
+    portMatrix = ((2/totG)*colG*onesRow)-onesDiag;
