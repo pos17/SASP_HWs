@@ -43,8 +43,34 @@ RspkMid=8;
 RspkHigh=8;
 %% WDF setting of free parameters (adaptation conditions)
 
+% Resistences adaptation
+
+Z28 = R1;
+Z42 = R2;
+Z10 = RspkHigh;
+Z26 = RspkMid;
+Z39 = RspkLow;
+
+% Condenser adaptation
+
+Z9 = Ts/(2*C1);
+Z18 = Ts/(2*C2);
+Z21 = Ts/(2*C3);
+Z30 = Ts/(2*C4);
+Z36 = Ts/(2*C5);
+Z41 = Ts/(2*C6);
+
+% Inductors adaptation
+
+Z12 = 2*L1/Ts;
+Z13 = 2*L2/Ts;
+Z24 = 2*L3/Ts;
+Z31 = 2*L4/Ts;
+
+
 
 %% Computation of Scattering Matrices
+
 
 
 %% Initialization of Waves
