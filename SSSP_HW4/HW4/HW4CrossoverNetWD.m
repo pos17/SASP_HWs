@@ -138,8 +138,8 @@ Sp8 = ParallelAdaptor(Z37,Z38,Z39);
 Ss6 = SeriesAdaptor(Z40,Z41,Z42);
 
 %% Initialization of Waves
-a = zeros(42,Nsamp);
-b = zeros(42,Nsamp);
+a = zeros(42,2);
+b = zeros(42,2);
 
 %% Initialize Output Signals
 % Low
@@ -152,69 +152,76 @@ VoutHigh=zeros(size(Vin));
 ii=0;
 while (ii<Nsamp)
     ii=ii+1;
+    
+    in = mod(ii,2) +1;
+    in_1 = mod(ii-1,2) +1;
 
     %% Manage Dynamic Elements
     
     % HIGH 
-    a(9,ii) = b(9,ii-1)
-    a(12,ii) = -b(12,ii-1)
+    a(9,in) = b(9,in_1);
+    a(10,in) = 0;
+    a(12,in) = -b(12,in_1);
     
     % MID 
-    a(13,ii) = -b(13,ii-1)
-    a(18,ii) = b(18,ii-1)
-    a(21,ii) = b(21,ii-1)
-    a(24,ii) = -b(24,ii-1)
-    a(30,ii) = b(30,ii-1)
+    a(13,in) = -b(13,in_1);
+    a(18,in) = b(18,in_1);
+    a(21,in) = b(21,in_1);
+    a(24,in) = -b(24,in_1);
+    a(26,in) = 0;
+    a(28,in) = 0;
+    a(30,in) = b(30,in_1);
     
     %LOW
-    a(31,ii) = -b(31,ii-1)
-    a(36,ii) = b(36,ii-1)
-    a(41,ii) = b(41,ii-1)
-    
+    a(31,in) = -b(31,in_1);
+    a(36,in) = b(36,in_1);
+    a(39,in) = 0;
+    a(41,in) = b(41,in_1);
+    a(42,in) = 0;
 
     %% Forward Scan
     
     % HIGH 
-    b(11,ii) = Sp3(2,:)*a(10:12,ii);
-    a(7,ii) = b(11,ii);
-    b(8,ii) = Ss1(2,:)*a(7:9,ii);
+    b(11,in) = Sp3(2,:)*a(10:12,in);
+    a(7,in) = b(11,in);
+    b(8,in) = Ss1(2,:)*a(7:9,in);
     
     % MID
     
-    b(29,ii) = Ss4(2,:)*a(28:30,ii);
-    a(26,ii) = b(29,ii);
-    b(25,ii) = Sp6(1,:)*a(25:27,ii);
-    a(23,ii) = b(25,ii);
-    b(22,ii) = Sp5(1,:)*a(22:24,ii);
-    a(20,ii) = b(22,ii);
-    b(19,ii) = Ss3(1,:)*a(19:21,ii);
-    a(17,ii) = b(19,ii);
-    b(16,ii) = Sp4(1,:)*a(16:18,ii);
-    a(15,ii) = b(16,ii);
-    b(14,ii) = Ss2(2,:)*a(13:15,ii);
+    b(29,in) = Ss4(2,:)*a(28:30,in);
+    a(26,in) = b(29,in);
+    b(25,in) = Sp6(1,:)*a(25:27,in);
+    a(23,in) = b(25,in);
+    b(22,in) = Sp5(1,:)*a(22:24,in);
+    a(20,in) = b(22,in);
+    b(19,in) = Ss3(1,:)*a(19:21,in);
+    a(17,in) = b(19,in);
+    b(16,in) = Sp4(1,:)*a(16:18,in);
+    a(15,in) = b(16,in);
+    b(14,in) = Ss2(2,:)*a(13:15,in);
     
     %LOW 
 
-    b(40,ii) = Ss6(1,:)*a(40:42,ii);
-    a(38,ii) = b(40,ii);
-    b(37,ii) = Sp8(1,:)*a(37:39,ii);
-    a(35,ii) = b(37,ii);
-    b(34,ii) = Sp7(1,:)*a(34:36,ii);
-    a(33,ii) = b(34,ii);
-    b(32,ii) = Ss5(2,:)*a(31:33,ii);
+    b(40,in) = Ss6(1,:)*a(40:42,in);
+    a(38,in) = b(40,in);
+    b(37,in) = Sp8(1,:)*a(37:39,in);
+    a(35,in) = b(37,in);
+    b(34,in) = Sp7(1,:)*a(34:36,in);
+    a(33,in) = b(34,in);
+    b(32,in) = Ss5(2,:)*a(31:33,in);
     
     % Main circuit parallels
-    a(1,ii) = b(8,ii);
-    a(4,ii) = b(32,ii);
-    a(6,ii) = b(14,ii);
-    a(2,ii) = b(5,ii);
-    b(5,ii) = Sp2(2,:)*a(4:6,ii);
-    b(3,ii) = Sp1(3,:)*a(1:3,ii);
+    a(1,in) = b(8,in);
+    a(4,in) = b(32,in);
+    a(6,in) = b(14,in);
+    a(2,in) = b(5,in);
+    b(5,in) = Sp2(2,:)*a(4:6,in);
+    b(3,in) = Sp1(3,:)*a(1:3,in);
     
 
     %% Local Root Scattering
     
-    a(3,ii) = 2* Vin(ii,1) - b(3,ii); 
+    a(3,in) = 2* Vin(in,1) - b(3,in); 
 
     %% Backward Scan
     
