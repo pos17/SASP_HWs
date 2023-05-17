@@ -62,10 +62,10 @@ Z41 = Ts/(2*C6);
 
 % Inductors adaptation
 
-Z12 = 2*L1/Ts;
-Z13 = 2*L2/Ts;
-Z24 = 2*L3/Ts;
-Z31 = 2*L4/Ts;
+Z12 = (2*L1)/Ts;
+Z13 = (2*L2)/Ts;
+Z24 = (2*L3)/Ts;
+Z31 = (2*L4)/Ts;
 
 
 % Series and Parallels nodes 
@@ -103,7 +103,7 @@ Z32 = Z31 + Z33;
 
 % Main circuit parallels
 
-Z1=Z8;
+Z1 = Z8;
 Z4 = Z32;
 Z6 = Z14;
 
@@ -294,6 +294,11 @@ while (ii<=Nsamp)
     % LOW 
 
     VoutLow(jj,1) = (a(39,ii) + b(39,ii))/2;
+
+    if(ii==floor(Nsamp/2)) 
+        disp("debug")
+    end
+
 end
 
 %% Output Plots
