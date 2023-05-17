@@ -18,6 +18,8 @@ Fs =FsLTSpice/downSampFact;
 %% Downsample Input Signal
 Vin=Vin([1:downSampFact:end]);
 
+plot(Vin)
+
 %% Sampling Period
 Ts=1/Fs;
 %% Number of Samples
@@ -150,8 +152,8 @@ VoutMid=zeros(length(Vin),1);
 VoutHigh=zeros(length(Vin),1);
 
 ii=0;
-ii = ii+1; % to take into account matlab shift in elements 
-while (ii<=Nsamp)
+%ii = ii+1; % to take into account matlab shift in elements 
+while (ii<Nsamp)
     ii=ii+1;
     
     in = mod(ii,2) +1;
@@ -169,7 +171,7 @@ while (ii<=Nsamp)
     a(18,in) = b(18,in_1);
     a(21,in) = b(21,in_1);
     a(24,in) = -b(24,in_1);
-    a(26,in) = 0;
+    a(27,in) = 0;
     a(28,in) = 0;
     a(30,in) = b(30,in_1);
     
@@ -225,56 +227,56 @@ while (ii<=Nsamp)
     a(3,in) = 2* Vin(in,1) - b(3,in); 
 
     %% Backward Scan
-    b(1,ii) = Sp1(1,:)*a(1:3,ii);
-    b(2,ii) = Sp1(2,:)*a(1:3,ii);
-    a(8,ii) = b(1,ii);
-    a(5,ii) = b(2,ii);
-    b(4,ii) = Sp2(1,:)*a(4:6,ii);
-    b(6,ii) = Sp2(3,:)*a(4:6,ii);
-    a(14,ii) = b(6,ii);
-    a(32,ii) = b(4,ii);
+    b(1,in) = Sp1(1,:)*a(1:3,in);
+    b(2,in) = Sp1(2,:)*a(1:3,in);
+    a(8,in) = b(1,in);
+    a(5,in) = b(2,in);
+    b(4,in) = Sp2(1,:)*a(4:6,in);
+    b(6,in) = Sp2(3,:)*a(4:6,in);
+    a(14,in) = b(6,in);
+    a(32,in) = b(4,in);
 
     % HIGH 
     
-    b(7,ii) = Ss1(1,:)*a(7:9,ii);
-    b(9,ii) = Ss1(3,:)*a(7:9,ii);
-    a(11,ii) = b(7,ii);
-    b(10,ii) = Sp3(1,:)*a(10:12,ii);
-    b(12,ii) = Sp3(3,:)*a(10:12,ii);
+    b(7,in) = Ss1(1,:)*a(7:9,in);
+    b(9,in) = Ss1(3,:)*a(7:9,in);
+    a(11,in) = b(7,in);
+    b(10,in) = Sp3(1,:)*a(10:12,in);
+    b(12,in) = Sp3(3,:)*a(10:12,in);
     
     % MID
 
-    b(13,ii) = Ss2(1,:)*a(13:15,ii);
-    b(15,ii) = Ss2(3,:)*a(13:15,ii);
-    a(16,ii) = b(15,ii);
-    b(17,ii) = Sp4(2,:)*a(16:18,ii);
-    b(18,ii) = Sp4(3,:)*a(16:18,ii);
-    a(19,ii) = b(17,ii);
-    b(20,ii) = Ss3(2,:)*a(19:21,ii);
-    b(21,ii) = Ss3(3,:)*a(19:21,ii);
-    a(22,ii) = b(20,ii);
-    b(23,ii) = Sp5(2,:)*a(22:24,ii);
-    b(24,ii) = Sp5(3,:)*a(22:24,ii);
-    a(25,ii) = b(23,ii);
-    b(26,ii) = Sp6(2,:)*a(25:27,ii);
-    b(27,ii) = Sp6(3,:)*a(25:27,ii);
-    a(29,ii) = b(26,ii);
-    b(28,ii) = Ss4(1,:)*a(28:30,ii);
-    b(30,ii) = Ss4(3,:)*a(28:30,ii);
+    b(13,in) = Ss2(1,:)*a(13:15,in);
+    b(15,in) = Ss2(3,:)*a(13:15,in);
+    a(16,in) = b(15,in);
+    b(17,in) = Sp4(2,:)*a(16:18,in);
+    b(18,in) = Sp4(3,:)*a(16:18,in);
+    a(19,in) = b(17,in);
+    b(20,in) = Ss3(2,:)*a(19:21,in);
+    b(21,in) = Ss3(3,:)*a(19:21,in);
+    a(22,in) = b(20,in);
+    b(23,in) = Sp5(2,:)*a(22:24,in);
+    b(24,in) = Sp5(3,:)*a(22:24,in);
+    a(25,in) = b(23,in);
+    b(26,in) = Sp6(2,:)*a(25:27,in);
+    b(27,in) = Sp6(3,:)*a(25:27,in);
+    a(29,in) = b(26,in);
+    b(28,in) = Ss4(1,:)*a(28:30,in);
+    b(30,in) = Ss4(3,:)*a(28:30,in);
     
     % LOW
 
-    b(31,ii) = Ss5(1,:)*a(31:33,ii);
-    b(33,ii) = Ss5(3,:)*a(31:33,ii);
-    a(34,ii) = b(33,ii);
-    b(35,ii) = Sp7(2,:)*a(34:36,ii);
-    b(36,ii) = Sp7(3,:)*a(34:36,ii);
-    a(37,ii) = b(35,ii);
-    b(38,ii) = Sp8(2,:)*a(37:39,ii);
-    b(39,ii) = Sp8(3,:)*a(37:39,ii);
-    a(40,ii) = b(38,ii);
-    b(41,ii) = Ss6(2,:)*a(40:42,ii);
-    b(42,ii) = Ss6(3,:)*a(40:42,ii);
+    b(31,in) = Ss5(1,:)*a(31:33,in);
+    b(33,in) = Ss5(3,:)*a(31:33,in);
+    a(34,in) = b(33,in);
+    b(35,in) = Sp7(2,:)*a(34:36,in);
+    b(36,in) = Sp7(3,:)*a(34:36,in);
+    a(37,in) = b(35,in);
+    b(38,in) = Sp8(2,:)*a(37:39,in);
+    b(39,in) = Sp8(3,:)*a(37:39,in);
+    a(40,in) = b(38,in);
+    b(41,in) = Ss6(2,:)*a(40:42,in);
+    b(42,in) = Ss6(3,:)*a(40:42,in);
     
     
     %% Read Output
@@ -282,17 +284,17 @@ while (ii<=Nsamp)
     
     % HIGH 
 
-    VoutHigh(jj,1) = (a(10,ii) + b(10,ii))/2;
+    VoutHigh(ii,1) = (a(10,in) + b(10,in))/2;
     
 
     % MID 
 
-    VoutMid(jj,1) = (a(27,ii) + b(27,ii))/2;
+    VoutMid(ii,1) = (a(27,in) + b(27,in))/2;
     
 
     % LOW 
 
-    VoutLow(jj,1) = (a(39,ii) + b(39,ii))/2;
+    VoutLow(ii,1) = (a(39,in) + b(39,in))/2;
 
     if(ii==floor(Nsamp/2)) 
         disp("debug")
