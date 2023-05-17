@@ -48,7 +48,7 @@ RspkHigh=8;
 Z28 = R1;
 Z42 = R2;
 Z10 = RspkHigh;
-Z26 = RspkMid;
+Z27 = RspkMid;
 Z39 = RspkLow;
 
 % Condenser adaptation
@@ -79,7 +79,7 @@ Z8 = Z7 +Z9;
 % MID SECTION
 
 Z29 = Z28 +Z30;
-Z27 = Z29;
+Z26 = Z29;
 Z25 = (Z26*Z27) /(Z26+Z27);
 Z23 = Z25;
 Z22 = (Z23*Z24) /(Z23+Z24);
@@ -114,7 +114,7 @@ Z3 = (Z1*Z2) /(Z1+Z2);
 %% Computation of Scattering Matrices 
 
 Sp1 = ParallelAdaptor(Z1,Z2,Z3);
-Sp3 = ParallelAdaptor(Z4,Z5,Z6);
+Sp2 = ParallelAdaptor(Z4,Z5,Z6);
 
 % HIGH
 
@@ -138,39 +138,45 @@ Sp8 = ParallelAdaptor(Z37,Z38,Z39);
 Ss6 = SeriesAdaptor(Z40,Z41,Z42);
 
 %% Initialization of Waves
-a = zeros(42,Nsamp);
-b = zeros(42,Nsamp);
+a = zeros(42,Nsamp+1);
+b = zeros(42,Nsamp+1);
 
 %% Initialize Output Signals
 % Low
-VoutLow=zeros(size(Vin));
+VoutLow=zeros(length(Vin),1);
 % Mid
-VoutMid=zeros(size(Vin));
+VoutMid=zeros(length(Vin),1);
 % High
-VoutHigh=zeros(size(Vin));
+VoutHigh=zeros(length(Vin),1);
 
 ii=0;
-while (ii<Nsamp)
+ii = ii+1; % to take into account matlab shift in elements 
+while (ii<=Nsamp)
     ii=ii+1;
 
     %% Manage Dynamic Elements
     
     % HIGH 
-    a(9,ii) = b(9,ii-1)
-    a(12,ii) = -b(12,ii-1)
+    a(9,ii) = b(9,ii-1);
+    a(10,ii) = 0;
+    a(12,ii) = -b(12,ii-1);
+    
     
     % MID 
-    a(13,ii) = -b(13,ii-1)
-    a(18,ii) = b(18,ii-1)
-    a(21,ii) = b(21,ii-1)
-    a(24,ii) = -b(24,ii-1)
-    a(30,ii) = b(30,ii-1)
+    a(13,ii) = -b(13,ii-1);
+    a(18,ii) = b(18,ii-1);
+    a(21,ii) = b(21,ii-1);
+    a(24,ii) = -b(24,ii-1);
+    a(27,ii) = 0;
+    a(28,ii) = 0;
+    a(30,ii) = b(30,ii-1);
     
     %LOW
-    a(31,ii) = -b(31,ii-1)
-    a(36,ii) = b(36,ii-1)
-    a(41,ii) = b(41,ii-1)
-    
+    a(31,ii) = -b(31,ii-1);
+    a(36,ii) = b(36,ii-1);
+    a(39,ii) = 0;
+    a(41,ii) = b(41,ii-1);
+    a(42,ii) = 0; 
 
     %% Forward Scan
     
@@ -204,26 +210,91 @@ while (ii<Nsamp)
     b(32,ii) = Ss5(2,:)*a(31:33,ii);
     
     % Main circuit parallels
+
+   
+    
     a(1,ii) = b(8,ii);
     a(4,ii) = b(32,ii);
     a(6,ii) = b(14,ii);
-    a(2,ii) = b(5,ii);
     b(5,ii) = Sp2(2,:)*a(4:6,ii);
+    a(2,ii) = b(5,ii);
     b(3,ii) = Sp1(3,:)*a(1:3,ii);
-    
 
     %% Local Root Scattering
-    
-    a(3,ii) = 2* Vin(ii,1) - b(3,ii); 
+    jj = ii-1; 
+
+    a(3,ii) = 2* Vin(jj,1) - b(3,ii); 
 
     %% Backward Scan
-    
+    b(1,ii) = Sp1(1,:)*a(1:3,ii);
+    b(2,ii) = Sp1(2,:)*a(1:3,ii);
+    a(8,ii) = b(1,ii);
+    a(5,ii) = b(2,ii);
+    b(4,ii) = Sp2(1,:)*a(4:6,ii);
+    b(6,ii) = Sp2(3,:)*a(4:6,ii);
+    a(14,ii) = b(6,ii);
+    a(32,ii) = b(4,ii);
 
+    % HIGH 
+    
+    b(7,ii) = Ss1(1,:)*a(7:9,ii);
+    b(9,ii) = Ss1(3,:)*a(7:9,ii);
+    a(11,ii) = b(7,ii);
+    b(10,ii) = Sp3(1,:)*a(10:12,ii);
+    b(12,ii) = Sp3(3,:)*a(10:12,ii);
+    
+    % MID
+
+    b(13,ii) = Ss2(1,:)*a(13:15,ii);
+    b(15,ii) = Ss2(3,:)*a(13:15,ii);
+    a(16,ii) = b(15,ii);
+    b(17,ii) = Sp4(2,:)*a(16:18,ii);
+    b(18,ii) = Sp4(3,:)*a(16:18,ii);
+    a(19,ii) = b(17,ii);
+    b(20,ii) = Ss3(2,:)*a(19:21,ii);
+    b(21,ii) = Ss3(3,:)*a(19:21,ii);
+    a(22,ii) = b(20,ii);
+    b(23,ii) = Sp5(2,:)*a(22:24,ii);
+    b(24,ii) = Sp5(3,:)*a(22:24,ii);
+    a(25,ii) = b(23,ii);
+    b(26,ii) = Sp6(2,:)*a(25:27,ii);
+    b(27,ii) = Sp6(3,:)*a(25:27,ii);
+    a(29,ii) = b(26,ii);
+    b(28,ii) = Ss4(1,:)*a(28:30,ii);
+    b(30,ii) = Ss4(3,:)*a(28:30,ii);
+    
+    % LOW
+
+    b(31,ii) = Ss5(1,:)*a(31:33,ii);
+    b(33,ii) = Ss5(3,:)*a(31:33,ii);
+    a(34,ii) = b(33,ii);
+    b(35,ii) = Sp7(2,:)*a(34:36,ii);
+    b(36,ii) = Sp7(3,:)*a(34:36,ii);
+    a(37,ii) = b(35,ii);
+    b(38,ii) = Sp8(2,:)*a(37:39,ii);
+    b(39,ii) = Sp8(3,:)*a(37:39,ii);
+    a(40,ii) = b(38,ii);
+    b(41,ii) = Ss6(2,:)*a(40:42,ii);
+    b(42,ii) = Ss6(3,:)*a(40:42,ii);
+    
+    
     %% Read Output
     
     
-end
+    % HIGH 
 
+    VoutHigh(jj,1) = (a(10,ii) + b(10,ii))/2;
+    
+
+    % MID 
+
+    VoutMid(jj,1) = (a(27,ii) + b(27,ii))/2;
+    
+
+    % LOW 
+
+    VoutLow(jj,1) = (a(39,ii) + b(39,ii))/2;
+end
 
 %% Output Plots
 figure
