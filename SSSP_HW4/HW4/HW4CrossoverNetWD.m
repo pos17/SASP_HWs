@@ -223,7 +223,7 @@ while (ii<=Nsamp)
     %% Local Root Scattering
     jj = ii-1; 
 
-    a(3,ii) = 2* Vin(jj,1) - b(3,ii); 
+    a(3,ii) = 2* Vin(jj,1) - b(3,ii);
 
     %% Backward Scan
     b(1,ii) = Sp1(1,:)*a(1:3,ii);
@@ -339,3 +339,4 @@ plot(Ts*[1:Nsamp],OutHighSpice([1:downSampFact:end])-VoutHigh,'k','Linewidth',1)
 xlabel('time [seconds]','Fontsize',16,'interpreter','latex');
 ylabel('$E_{\mathrm{outHigh}}$ [V]','Fontsize',16,'interpreter','latex');
 
+rms(VoutLow)
