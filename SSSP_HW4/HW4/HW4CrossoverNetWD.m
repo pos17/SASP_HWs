@@ -75,12 +75,12 @@ Z31 = (2*L4)/Ts;
 
 Z11 = (Z10*Z12) /(Z10+Z12);
 Z7 = Z11;
-Z8 = Z7 +Z9;
+Z8 = Z7 + Z9;
 
 
 % MID SECTION
 
-Z29 = Z28 +Z30;
+Z29 = Z28 + Z30;
 Z26 = Z29;
 Z25 = (Z26*Z27) /(Z26+Z27);
 Z23 = Z25;
@@ -217,14 +217,14 @@ while (ii<Nsamp)
     a(1,in) = b(8,in);
     a(4,in) = b(32,in);
     a(6,in) = b(14,in);
-    a(2,in) = b(5,in);
     b(5,in) = Sp2(2,:)*a(4:6,in);
+    a(2,in) = b(5,in);
     b(3,in) = Sp1(3,:)*a(1:3,in);
     
 
     %% Local Root Scattering
     
-    a(3,in) = 2* Vin(in,1) - b(3,in); 
+    a(3,in) = 2* Vin(ii,1) - b(3,in); 
 
     %% Backward Scan
     b(1,in) = Sp1(1,:)*a(1:3,in);
