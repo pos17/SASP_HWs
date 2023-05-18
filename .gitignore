@@ -275,3 +275,6 @@ DAAP_HW1/audioOutputs/
 
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,matlab,windows,python
+SSSP_HW4/HW4/Draft1.net
+SSSP_HW4/HW4/Draft1.op.raw
+.gitignore
