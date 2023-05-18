@@ -12,7 +12,7 @@ clc
 TsLTSpice=1/FsLTSpice;
 
 %% Sampling frequency (to be varied: FsLTSpice/downSampFact, with downSampFact={4,3,2})
-downSampFact=2;
+downSampFact=1;
 Fs =FsLTSpice/downSampFact; 
 
 %% Downsample Input Signal
@@ -45,7 +45,7 @@ RspkHigh=8;
 
 % Resistences adaptation
 
-Z28 = R1;
+Z30 = R1;
 Z42 = R2;
 Z10 = RspkHigh;
 Z27 = RspkMid;
@@ -56,16 +56,16 @@ Z39 = RspkLow;
 Z9 = Ts/(2*C1);
 Z18 = Ts/(2*C2);
 Z21 = Ts/(2*C3);
-Z30 = Ts/(2*C4);
+Z28 = Ts/(2*C4);
 Z36 = Ts/(2*C5);
-Z41 = Ts/(2*C6);
+Z40 = Ts/(2*C6);
 
 % Inductors adaptation
 
 Z12 = (2*L1)/Ts;
-Z13 = (2*L2)/Ts;
+Z15 = (2*L2)/Ts;
 Z24 = (2*L3)/Ts;
-Z31 = (2*L4)/Ts;
+Z33 = (2*L4)/Ts;
 
 
 % Series and Parallels nodes 
@@ -79,37 +79,37 @@ Z8 = Z7 +Z9;
 % MID SECTION
 
 Z29 = Z28 +Z30;
-Z26 = Z29;
-Z25 = (Z26*Z27) /(Z26+Z27);
-Z23 = Z25;
-Z22 = (Z23*Z24) /(Z23+Z24);
-Z20 = Z22;
-Z19 = Z20 + Z21;
-Z17 = Z19;
-Z16 = (Z17*Z18) /(Z17+Z18);
-Z15 = Z16;
+Z25 = Z29;
+Z26 = (Z25*Z27) /(Z25+Z27);
+Z22 = Z26;
+Z23 = (Z22*Z24) /(Z22+Z24);
+Z19 = Z23;
+Z20 = Z19 + Z21;
+Z16 = Z20;
+Z17 = (Z16*Z18) /(Z16+Z18);
+Z13 = Z17;
 Z14 = Z13 + Z15;
 
 
 % LOW SECTION
 
-Z40 = Z41 + Z42;
-Z38 = Z40;
-Z37 = (Z38*Z39) /(Z38+Z39);
-Z35 = Z37;
-Z34 = (Z35*Z36) /(Z35+Z36);
-Z33 = Z34;
+Z41 = Z40 + Z42;
+Z37 = Z41;
+Z38 = (Z37*Z39) /(Z37+Z39);
+Z34 = Z38;
+Z35 = (Z34*Z36) /(Z34+Z36);
+Z31 = Z35;
 Z32 = Z31 + Z33;
 
 % Main circuit parallels
 
-Z1 = Z8;
+Z3 = Z8;
 Z4 = Z32;
 Z6 = Z14;
 
 Z5 = (Z4*Z6) /(Z4+Z6);
-Z2 = Z5;
-Z3 = (Z1*Z2) /(Z1+Z2);
+Z1 = Z5;
+Z2 = (Z1*Z3) /(Z1+Z3);
 
 %% Computation of Scattering Matrices 
 
@@ -163,19 +163,19 @@ while (ii<=Nsamp)
     
     
     % MID 
-    a(13,ii) = -b(13,ii-1);
+    a(15,ii) = -b(15,ii-1);
     a(18,ii) = b(18,ii-1);
     a(21,ii) = b(21,ii-1);
     a(24,ii) = -b(24,ii-1);
     a(27,ii) = 0;
-    a(28,ii) = 0;
-    a(30,ii) = b(30,ii-1);
+    a(30,ii) = 0;
+    a(28,ii) = b(28,ii-1);
     
     %LOW
-    a(31,ii) = -b(31,ii-1);
+    a(33,ii) = -b(33,ii-1);
     a(36,ii) = b(36,ii-1);
     a(39,ii) = 0;
-    a(41,ii) = b(41,ii-1);
+    a(40,ii) = b(40,ii-1);
     a(42,ii) = 0; 
 
     %% Forward Scan
@@ -188,51 +188,51 @@ while (ii<=Nsamp)
     % MID
     
     b(29,ii) = Ss4(2,:)*a(28:30,ii);
-    a(26,ii) = b(29,ii);
-    b(25,ii) = Sp6(1,:)*a(25:27,ii);
-    a(23,ii) = b(25,ii);
-    b(22,ii) = Sp5(1,:)*a(22:24,ii);
-    a(20,ii) = b(22,ii);
-    b(19,ii) = Ss3(1,:)*a(19:21,ii);
-    a(17,ii) = b(19,ii);
-    b(16,ii) = Sp4(1,:)*a(16:18,ii);
-    a(15,ii) = b(16,ii);
+    a(25,ii) = b(29,ii);
+    b(26,ii) = Sp6(2,:)*a(25:27,ii);
+    a(22,ii) = b(26,ii);
+    b(23,ii) = Sp5(2,:)*a(22:24,ii);
+    a(19,ii) = b(23,ii);
+    b(20,ii) = Ss3(2,:)*a(19:21,ii);
+    a(16,ii) = b(20,ii);
+    b(17,ii) = Sp4(2,:)*a(16:18,ii);
+    a(13,ii) = b(17,ii);
     b(14,ii) = Ss2(2,:)*a(13:15,ii);
     
     %LOW 
 
-    b(40,ii) = Ss6(1,:)*a(40:42,ii);
-    a(38,ii) = b(40,ii);
-    b(37,ii) = Sp8(1,:)*a(37:39,ii);
-    a(35,ii) = b(37,ii);
-    b(34,ii) = Sp7(1,:)*a(34:36,ii);
-    a(33,ii) = b(34,ii);
+    b(41,ii) = Ss6(2,:)*a(40:42,ii);
+    a(37,ii) = b(41,ii);
+    b(38,ii) = Sp8(2,:)*a(37:39,ii);
+    a(34,ii) = b(38,ii);
+    b(35,ii) = Sp7(2,:)*a(34:36,ii);
+    a(31,ii) = b(35,ii);
     b(32,ii) = Ss5(2,:)*a(31:33,ii);
     
     % Main circuit parallels
 
    
     
-    a(1,ii) = b(8,ii);
+    a(3,ii) = b(8,ii);
     a(4,ii) = b(32,ii);
-    a(6,ii) = -b(14,ii);
+    a(6,ii) = b(14,ii);
     b(5,ii) = Sp2(2,:)*a(4:6,ii);
-    a(2,ii) = b(5,ii);
-    b(3,ii) = Sp1(3,:)*a(1:3,ii);
+    a(1,ii) = b(5,ii);
+    b(2,ii) = Sp1(2,:)*a(1:3,ii);
 
     %% Local Root Scattering
     jj = ii-1; 
 
-    a(3,ii) = - 2* Vin(jj,1) - b(3,ii);
+    a(2,ii) = 2* Vin(jj,1) - b(2,ii);
 
     %% Backward Scan
     b(1,ii) = Sp1(1,:)*a(1:3,ii);
-    b(2,ii) = Sp1(2,:)*a(1:3,ii);
-    a(8,ii) = b(1,ii);
-    a(5,ii) = b(2,ii);
+    b(3,ii) = Sp1(3,:)*a(1:3,ii);
+    a(8,ii) = b(3,ii);
+    a(5,ii) = b(1,ii);
     b(4,ii) = Sp2(1,:)*a(4:6,ii);
     b(6,ii) = Sp2(3,:)*a(4:6,ii);
-    a(14,ii) = - b(6,ii);
+    a(14,ii) = b(6,ii);
     a(32,ii) = b(4,ii);
 
     % HIGH 
@@ -247,19 +247,19 @@ while (ii<=Nsamp)
 
     b(13,ii) = Ss2(1,:)*a(13:15,ii);
     b(15,ii) = Ss2(3,:)*a(13:15,ii);
-    a(16,ii) = b(15,ii);
-    b(17,ii) = Sp4(2,:)*a(16:18,ii);
+    a(17,ii) = b(13,ii);
+    b(16,ii) = Sp4(1,:)*a(16:18,ii);
     b(18,ii) = Sp4(3,:)*a(16:18,ii);
-    a(19,ii) = b(17,ii);
-    b(20,ii) = Ss3(2,:)*a(19:21,ii);
+    a(20,ii) = b(16,ii);
+    b(19,ii) = Ss3(1,:)*a(19:21,ii);
     b(21,ii) = Ss3(3,:)*a(19:21,ii);
-    a(22,ii) = b(20,ii);
-    b(23,ii) = Sp5(2,:)*a(22:24,ii);
+    a(23,ii) = b(19,ii);
+    b(22,ii) = Sp5(1,:)*a(22:24,ii);
     b(24,ii) = Sp5(3,:)*a(22:24,ii);
-    a(25,ii) = b(23,ii);
-    b(26,ii) = Sp6(2,:)*a(25:27,ii);
+    a(26,ii) = b(22,ii);
+    b(25,ii) = Sp6(1,:)*a(25:27,ii);
     b(27,ii) = Sp6(3,:)*a(25:27,ii);
-    a(29,ii) = b(26,ii);
+    a(29,ii) = b(25,ii);
     b(28,ii) = Ss4(1,:)*a(28:30,ii);
     b(30,ii) = Ss4(3,:)*a(28:30,ii);
     
@@ -267,14 +267,14 @@ while (ii<=Nsamp)
 
     b(31,ii) = Ss5(1,:)*a(31:33,ii);
     b(33,ii) = Ss5(3,:)*a(31:33,ii);
-    a(34,ii) = b(33,ii);
-    b(35,ii) = Sp7(2,:)*a(34:36,ii);
+    a(35,ii) = b(31,ii);
+    b(34,ii) = Sp7(1,:)*a(34:36,ii);
     b(36,ii) = Sp7(3,:)*a(34:36,ii);
-    a(37,ii) = b(35,ii);
-    b(38,ii) = Sp8(2,:)*a(37:39,ii);
+    a(38,ii) = b(34,ii);
+    b(37,ii) = Sp8(1,:)*a(37:39,ii);
     b(39,ii) = Sp8(3,:)*a(37:39,ii);
-    a(40,ii) = b(38,ii);
-    b(41,ii) = Ss6(2,:)*a(40:42,ii);
+    a(41,ii) = b(37,ii);
+    b(40,ii) = Ss6(1,:)*a(40:42,ii);
     b(42,ii) = Ss6(3,:)*a(40:42,ii);
     
     
