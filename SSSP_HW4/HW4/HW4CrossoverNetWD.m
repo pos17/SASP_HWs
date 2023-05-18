@@ -215,7 +215,7 @@ while (ii<=Nsamp)
     
     a(1,ii) = b(8,ii);
     a(4,ii) = b(32,ii);
-    a(6,ii) = b(14,ii);
+    a(6,ii) = -b(14,ii);
     b(5,ii) = Sp2(2,:)*a(4:6,ii);
     a(2,ii) = b(5,ii);
     b(3,ii) = Sp1(3,:)*a(1:3,ii);
@@ -223,7 +223,7 @@ while (ii<=Nsamp)
     %% Local Root Scattering
     jj = ii-1; 
 
-    a(3,ii) = 2* Vin(jj,1) - b(3,ii);
+    a(3,ii) = - 2* Vin(jj,1) - b(3,ii);
 
     %% Backward Scan
     b(1,ii) = Sp1(1,:)*a(1:3,ii);
@@ -232,7 +232,7 @@ while (ii<=Nsamp)
     a(5,ii) = b(2,ii);
     b(4,ii) = Sp2(1,:)*a(4:6,ii);
     b(6,ii) = Sp2(3,:)*a(4:6,ii);
-    a(14,ii) = b(6,ii);
+    a(14,ii) = - b(6,ii);
     a(32,ii) = b(4,ii);
 
     % HIGH 
@@ -299,7 +299,41 @@ while (ii<=Nsamp)
         disp("debug")
     end
 
+
 end
+
+%%
+V_3 = (a(3,:)+b(3,:))/2;
+V_7 = (a(7,:)+b(7,:))/2;
+V_8 = (a(8,:)+b(8,:))/2;
+V_9 = (a(8,:)+b(9,:))/2;
+
+figure
+plot(V_3)
+hold on 
+plot(Vin)
+figure
+plot(V_7);
+hold on 
+plot(V_8);
+hold on 
+plot(V_9);
+legend("V_7","V_8","V_9")
+
+I_7 = (a(7,:)-b(7,:))/(2*Z7);
+I_8 = (a(8,:)-b(8,:))/(2*Z8);
+I_9 = (a(9,:)-b(9,:))/(2*Z9);
+
+
+figure
+plot(I_7);
+hold on 
+plot(I_8);
+hold on 
+plot(I_9);
+
+
+%%
 
 %% Output Plots
 figure
