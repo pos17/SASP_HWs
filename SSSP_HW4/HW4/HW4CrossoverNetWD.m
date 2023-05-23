@@ -2,6 +2,10 @@ clear all
 close all
 clc
 
+if not(isfolder("plots"))
+    mkdir("Plots")
+end
+
 %% Import Input Audio Signal
 [Vin,~] = audioread('ExpSweep.wav');
 
@@ -12,8 +16,8 @@ clc
 TsLTSpice=1/FsLTSpice;
 
 %% Sampling frequency (to be varied: FsLTSpice/downSampFact, with downSampFact={4,3,2})
-downSampFact=2;
-Fs =FsLTSpice/downSampFact; 
+downSampFact=4;
+Fs = FsLTSpice/downSampFact; 
 
 %% Downsample Input Signal
 Vin=Vin([1:downSampFact:end]);
@@ -215,7 +219,7 @@ while (ii<=Nsamp)
     
     a(1,ii) = b(8,ii);
     a(4,ii) = b(32,ii);
-    a(6,ii) = -b(14,ii);
+    a(6,ii) = b(14,ii);
     b(5,ii) = Sp2(2,:)*a(4:6,ii);
     a(2,ii) = b(5,ii);
     b(3,ii) = Sp1(3,:)*a(1:3,ii);
@@ -223,7 +227,7 @@ while (ii<=Nsamp)
     %% Local Root Scattering
     jj = ii-1; 
 
-    a(3,ii) = - 2* Vin(jj,1) - b(3,ii);
+    a(3,ii) =  2* Vin(jj,1) - b(3,ii);
 
     %% Backward Scan
     b(1,ii) = Sp1(1,:)*a(1:3,ii);
@@ -232,7 +236,7 @@ while (ii<=Nsamp)
     a(5,ii) = b(2,ii);
     b(4,ii) = Sp2(1,:)*a(4:6,ii);
     b(6,ii) = Sp2(3,:)*a(4:6,ii);
-    a(14,ii) = - b(6,ii);
+    a(14,ii) = b(6,ii);
     a(32,ii) = b(4,ii);
 
     % HIGH 
@@ -283,7 +287,7 @@ while (ii<=Nsamp)
     
     % HIGH 
 
-    VoutHigh(jj,1) = (a(10,ii) + b(10,ii))/2;
+    VoutHigh(jj,1) = (a(10,ii) - b(10,ii))/2;
     
 
     % MID 
@@ -293,7 +297,7 @@ while (ii<=Nsamp)
 
     % LOW 
 
-    VoutLow(jj,1) = (a(39,ii) + b(39,ii))/2;
+    VoutLow(jj,1) = (a(39,ii) - b(39,ii))/2;
 
     if(ii==floor(Nsamp/2)) 
         disp("debug")
@@ -372,5 +376,6 @@ subplot(313)
 plot(Ts*[1:Nsamp],OutHighSpice([1:downSampFact:end])-VoutHigh,'k','Linewidth',1);grid on; xlim([0,tstop]);
 xlabel('time [seconds]','Fontsize',16,'interpreter','latex');
 ylabel('$E_{\mathrm{outHigh}}$ [V]','Fontsize',16,'interpreter','latex');
+saveas(gcf,strcat("Plots/","Error plot - downsampling factor = " + num2str(downSampFact)),"png")
 
 rms(VoutLow)
