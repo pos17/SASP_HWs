@@ -16,7 +16,7 @@ end
 TsLTSpice=1/FsLTSpice;
 
 %% Sampling frequency (to be varied: FsLTSpice/downSampFact, with downSampFact={4,3,2})
-downSampFact=4;
+downSampFact=1;
 Fs = FsLTSpice/downSampFact; 
 
 %% Downsample Input Signal
@@ -117,29 +117,175 @@ Z3 = (Z1*Z2) /(Z1+Z2);
 
 %% Computation of Scattering Matrices 
 
-Sp1 = ParallelAdaptor(Z1,Z2,Z3);
-Sp2 = ParallelAdaptor(Z4,Z5,Z6);
+%Sp1 = ParallelAdaptor(Z1,Z2,Z3);
+% Matrix calculation
+G1 = Z1^(-1);
+G2 = Z2^(-1);
+G3 = Z3^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp1 =portMatrix;
+
+%Sp2 = ParallelAdaptor(Z4,Z5,Z6);
+G1 = Z4^(-1);
+G2 = Z5^(-1);
+G3 = Z6^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp2 =portMatrix;
 
 % HIGH
 
-Ss1 = SeriesAdaptor(Z7,Z8,Z9);
-Sp3 = ParallelAdaptor(Z10,Z11,Z12);
+%Ss1 = SeriesAdaptor(Z7,Z8,Z9);
+Zs1 = Z7;
+Zs2 = Z8;
+Zs3 = Z9;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss1 = portMatrix;
+
+
+%Sp3 = ParallelAdaptor(Z10,Z11,Z12);
+G1 = Z10^(-1);
+G2 = Z11^(-1);
+G3 = Z12^(-1);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp3 =portMatrix;
 
 % MID
 
-Ss2 = SeriesAdaptor(Z13,Z14,Z15);
-Sp4 = ParallelAdaptor(Z16,Z17,Z18);
-Ss3 = SeriesAdaptor(Z19,Z20,Z21);
-Sp5 = ParallelAdaptor(Z22,Z23,Z24);
-Sp6 = ParallelAdaptor(Z25,Z26,Z27);
-Ss4 = SeriesAdaptor(Z28,Z29,Z30);
+%Ss2 = SeriesAdaptor(Z13,Z14,Z15);
+Zs1 = Z13;
+Zs2 = Z14;
+Zs3 = Z15;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss2 = portMatrix;
+
+
+%Sp4 = ParallelAdaptor(Z16,Z17,Z18);
+G1 = Z16^(-1);
+G2 = Z17^(-1);
+G3 = Z18^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp4=portMatrix;
+
+%Ss3 = SeriesAdaptor(Z19,Z20,Z21);
+Zs1 = Z19;
+Zs2 = Z20;
+Zs3 = Z21;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss3 = portMatrix;
+
+%Sp5 = ParallelAdaptor(Z22,Z23,Z24);
+G1 = Z22^(-1);
+G2 = Z23^(-1);
+G3 = Z24^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp5 =portMatrix;
+
+%Sp6 = ParallelAdaptor(Z25,Z26,Z27);
+G1 = Z25^(-1);
+G2 = Z26^(-1);
+G3 = Z27^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp6 =portMatrix;
+
+%Ss4 = SeriesAdaptor(Z28,Z29,Z30);
+Zs1 = Z28;
+Zs2 = Z29;
+Zs3 = Z30;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss4 = portMatrix;
 
 % LOW 
 
-Ss5 = SeriesAdaptor(Z31,Z32,Z33);
-Sp7 = ParallelAdaptor(Z34,Z35,Z36);
-Sp8 = ParallelAdaptor(Z37,Z38,Z39);
+%Ss5 = SeriesAdaptor(Z31,Z32,Z33);
+Zs1 = Z31;
+Zs2 = Z32;
+Zs3 = Z33;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss5 = portMatrix;
+
+%Sp7 = ParallelAdaptor(Z34,Z35,Z36);
+G1 = Z34^(-1);
+G2 = Z35^(-1);
+G3 = Z36^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp7 =portMatrix;
+
+%Sp8 = ParallelAdaptor(Z37,Z38,Z39);
+G1 = Z37^(-1);
+G2 = Z38^(-1);
+G3 = Z39^(-1);
+portMatrix = zeros(3);
+totG = sum([G1 G2 G3]);
+onesCol = ones(3,1);
+onesDiag = diag(onesCol);
+rowG = [G1,G2,G3];
+portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
+Sp8 =portMatrix;
+
 Ss6 = SeriesAdaptor(Z40,Z41,Z42);
+Zs1 = Z40;
+Zs2 = Z41;
+Zs3 = Z42;
+totZ = sum([Zs1 Zs2 Zs3]);
+onesRow = ones(1,3);
+onesDiag = diag(onesRow);
+colZ = [Zs1;Zs2;Zs3];
+portMatrix = onesDiag - ((2/totZ)*(colZ)*onesRow);
+Ss6 = portMatrix;
 
 %% Initialization of Waves
 a = zeros(42,Nsamp+1);
@@ -359,6 +505,7 @@ plot(TsLTSpice*[1:length(OutHighSpice)],OutHighSpice,'r','Linewidth',2); hold on
 plot(Ts*[1:Nsamp],VoutHigh,'b--','Linewidth',1); grid on; xlim([0,tstop]);
 xlabel('time [seconds]','Fontsize',16,'interpreter','latex');
 ylabel('$V_{\mathrm{outHigh}}$ [V]','Fontsize',16,'interpreter','latex');
+saveas(gcf,strcat("Plots/","Values Comparison - downsampling factor = " + num2str(downSampFact)),"png")
 
 %% Error Plots
 figure
