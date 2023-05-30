@@ -3,8 +3,8 @@ jw = linspace(0,pi,240000);
 % Ts = 1/48000
 % jww3 = 2/Ts * tan(jwtilde* Ts/2)
 figure
-plot(jw,jw-jw)
-hold on
+%plot(jw,jw-jw)
+%hold on
 
 lim = 24000;
 Fs = 192000;

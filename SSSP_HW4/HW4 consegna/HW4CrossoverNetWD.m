@@ -9,7 +9,6 @@
 % Student ID: 10868276                     %
 %------------------------------------------%
 
-
 clear all
 close all
 clc
@@ -288,7 +287,7 @@ rowG = [G1,G2,G3];
 portMatrix = ((2/totG)*onesCol*rowG)-onesDiag;
 Sp8 =portMatrix;
 
-Ss6 = SeriesAdaptor(Z40,Z41,Z42);
+%Ss6 = SeriesAdaptor(Z40,Z41,Z42);
 Zs1 = Z40;
 Zs2 = Z41;
 Zs3 = Z42;
@@ -536,5 +535,3 @@ plot(Ts*[1:Nsamp],OutHighSpice([1:downSampFact:end])-VoutHigh,'k','Linewidth',1)
 xlabel('time [seconds]','Fontsize',16,'interpreter','latex');
 ylabel('$E_{\mathrm{outHigh}}$ [V]','Fontsize',16,'interpreter','latex');
 saveas(gcf,strcat("Plots/","Error plot - downsampling factor = " + num2str(downSampFact)),"png")
-
-rms(VoutLow)
